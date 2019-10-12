@@ -1,7 +1,4 @@
 package study.thread;
-
-import javafx.concurrent.Worker;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -29,7 +26,6 @@ public class FixedSizeThreadPool {
         for (int i = 0; i < pollSize; i++) {
             Worker worker = new Worker(this);
             worker.start();
-            ;
             workers.add(worker);
         }
     }
