@@ -1,14 +1,12 @@
-package sort;
+package com.study.demo;
 
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Tiger
  * @date 2019-10-08
- * @see sort
+ * @see MergeSort
  **/
 public class MergeSort {
     public static void sort(int[] arr) {

@@ -1,11 +1,11 @@
-package study.thread;
+package com.study.demo;
 
 import java.util.concurrent.Callable;
 
 /**
  * @author Tiger
  * @date 2019-09-25
- * @see study.thread
+ * @see com.study.demo
  **/
 public class Test {
     public static void main(String[] args) throws Exception {

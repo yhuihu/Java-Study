@@ -1,11 +1,11 @@
-package study.thread;
+package com.study.demo;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author Tiger
  * @date 2019-09-25
- * @see study.thread
+ * @see com.study.demo
  **/
 public class FixedSizeThreadPool {
     private BlockingQueue<Runnable> blockingQueue;

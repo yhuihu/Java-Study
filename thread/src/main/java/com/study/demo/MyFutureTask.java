@@ -1,4 +1,4 @@
-package study.thread;
+package com.study.demo;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -7,7 +7,7 @@ import java.util.concurrent.locks.LockSupport;
 /**
  * @author Tiger
  * @date 2019-09-25
- * @see study.thread
+ * @see com.study.demo
  **/
 public class MyFutureTask<T> implements Runnable {
     private static final String ERROR = "EXP";

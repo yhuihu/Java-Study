@@ -1,4 +1,4 @@
-package sort;
+package com.study.demo;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * @author Tiger
  * @date 2019-10-08
- * @see sort
+ * @see SellSort
  **/
 public class SellSort {
     /**
