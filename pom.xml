@@ -12,6 +12,7 @@
         <module>thread</module>
         <module>sort</module>
         <module>MongoDB</module>
+        <module>redis</module>
     </modules>
 
 
