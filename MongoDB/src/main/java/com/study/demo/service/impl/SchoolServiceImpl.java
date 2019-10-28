@@ -1,4 +1,4 @@
-package com.study.demo.service.Impl;
+package com.study.demo.service.impl;
 
 import com.study.demo.dao.SchoolRepository;
 import com.study.demo.dao.SchoolRepository1;
@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * @author Tiger
  * @date 2019-10-14
- * @see com.study.demo.service.Impl
+ * @see com.study.demo.service.impl
  **/
 @Service
 public class SchoolServiceImpl implements SchoolService {
