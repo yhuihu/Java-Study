@@ -1,7 +1,6 @@
 package com.study.demo;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * @author Tiger
@@ -17,30 +16,24 @@ public class InsertionSort {
     public static void insertionSort(int[] array) {
         int i, j, k;
         for (i = 1; i < array.length; i++) {
-            //为a[i]在前面的a[0...i-1]有序区间中找一个合适的位置
+            int temp = array[i];
             for (j = i - 1; j >= 0; j--) {
-                if (array[j] < array[i]) {
+                if (array[j] > temp) {
+                    array[j + 1] = array[j];
+                } else {
                     break;
                 }
             }
-            //如找到了一个合适的位置
-            if (j != i - 1) {
-                //将比a[i]大的数据向后移
-                int temp = array[i];
-                for (k = i - 1; k > j; k--) {
-                    array[k + 1] = array[k];
-                }
-                //将a[i]放到正确位置上
-                array[k + 1] = temp;
-            }
+            array[j + 1] = temp;
         }
     }
 
     public static void main(String[] args) {
-        int[] array = new int[100];
-        for (int i = 1; i < array.length; i++) {
-            array[i] = new Random().nextInt(100);
-        }
+//        int[] array = new int[100];
+//        for (int i = 1; i < array.length; i++) {
+//            array[i] = new Random().nextInt(100);
+//        }
+        int[] array = {66, 45, 78, 64, 52, 11, 64, 55, 99, 11, 18};
         System.out.println("排序前：" + Arrays.toString(array));
         insertionSort(array);
         System.out.println("排序后：" + Arrays.toString(array));

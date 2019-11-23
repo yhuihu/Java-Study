@@ -30,6 +30,7 @@ public class SellSort {
             gap /= 2;
         }
     }
+
     public static void main(String[] args) {
         int[] array = new int[100];
         for (int i = 1; i < array.length; i++) {
