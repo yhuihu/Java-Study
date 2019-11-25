@@ -14,6 +14,7 @@
         <module>MongoDB</module>
         <module>redis</module>
         <module>RocketMQ</module>
+        <module>websocket</module>
     </modules>
 
 
