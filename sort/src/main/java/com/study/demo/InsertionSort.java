@@ -29,10 +29,6 @@ public class InsertionSort {
     }
 
     public static void main(String[] args) {
-//        int[] array = new int[100];
-//        for (int i = 1; i < array.length; i++) {
-//            array[i] = new Random().nextInt(100);
-//        }
         int[] array = {66, 45, 78, 64, 52, 11, 64, 55, 99, 11, 18};
         System.out.println("排序前：" + Arrays.toString(array));
         insertionSort(array);
