@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket</title>
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.min.js"></script>
+    <script src="http://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+</head>
+
+<body>
+<div style="margin: auto;text-align: center">
+    <h1>Welcome to websocket</h1>
+</div>
+<br/>
+<div style="margin: auto;text-align: center">
+    消息发送对象：
+    <select id="onLineUser">
+        <option>--所有--</option>
+    </select>
+    <input id="text" type="text"/>
+    <button onclick="send()">发送消息</button>
+</div>
+<br>
+<div style="margin-right: 10px;text-align: right">
+    <button onclick="closeWebSocket()">关闭连接</button>
+</div>
+<hr/>
+<div id="message" style="text-align: center;width: 70%;margin:0 auto;">
+    <table width="100%" id="messageTable">
+    </table>
+</div>
+<input type="text" th:value="getQueryVariable('userName')" id="username" style="display: none"/>
+</body>
+
+
+<script type="text/javascript">
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) {
+        return pair[1];
+      }
+    }
+    return (false);
+  }
+
+  var roomId = getQueryVariable("roomId");
+  var userName = getQueryVariable("userName");
+  var webSocket;
+  if ("WebSocket" in window) {
+    webSocket = new WebSocket("ws://localhost:8888/chat?roomId=" + roomId + "&userName=" + userName);
+
+    //连通之后的回调事件
+    webSocket.onopen = function () {
+      //webSocket.send( document.getElementById('username').value+"已经上线了");
+      console.log("已经连通了websocket");
+      setMessageInnerHTML("<tr><td align='center' width='100%'>已经连通了websocket</td></tr>");
+    };
+
+    //接收后台服务端的消息
+    webSocket.onmessage = function (evt) {
+      var received_msg = evt.data;
+      console.log("数据已接收:" + received_msg);
+      var obj = JSON.parse(received_msg);
+      console.log("可以解析成json:" + obj.messageType);
+      //1代表上线 2代表下线 3代表在线名单 4代表普通消息
+      if (obj.messageType == 1) {
+        //把名称放入到selection当中供选择
+        $("#onLineUser").empty();
+        var onlineName = obj.newUser;
+        var onlineList = obj.userList;
+        var option = "<option>" + "--所有--" + "</option>";
+        for (var i = 0; i < onlineList.length; i++) {
+          if (!(onlineList[i] == userName)) {
+            option += "<option>" + onlineList[i] + "</option>"
+          }
+        }
+        if (onlineName != userName) {
+          setMessageInnerHTML("<tr><td align='center' width='100%'>" + onlineName + "上线了" + "</td></tr>");
+        }
+        $("#onLineUser").append(option);
+      } else if (obj.messageType == 2) {
+        $("#onLineUser").empty();
+        var onlineName = obj.userList;
+        var offlineName = obj.offUser;
+        var option = "<option>" + "--所有--" + "</option>";
+        for (var i = 0; i < onlineName.length; i++) {
+          if (!(onlineName[i] == userName)) {
+            option += "<option>" + onlineName[i] + "</option>"
+          }
+        }
+        $("#onLineUser").append(option);
+
+        setMessageInnerHTML("<tr><td align='center' width='100%'>" + offlineName + "下线了" + "</td></tr>");
+      } else if (obj.messageType == 3) {
+        var onlineName = obj.onlineUsers;
+        var option = null;
+        for (var i = 0; i < onlineName.length; i++) {
+          if (!(onlineName[i] == userName)) {
+            option += "<option>" + onlineName[i] + "</option>"
+          }
+        }
+        $("#onLineUser").append(option);
+        console.log("获取了在线的名单" + onlineName.toString());
+      } else {
+        if (obj.fromUser == userName) {
+          if (obj.to == "ALL") {
+            setMessageInnerHTML("<tr><td align='right' width='100%'>" + "你" + "对所有人说：" + obj.message + "</td></tr>");
+          } else {
+            setMessageInnerHTML("<tr><td align='right' width='100%'>" + "你" + "对" + obj.toUser + "：" + obj.message + "</td></tr>");
+          }
+        } else {
+          if (obj.to == "ALL") {
+            setMessageInnerHTML("<tr><td align='left' width='100%'>" + obj.fromUser + "对所有人说：" + obj.message + "</td></tr>");
+          } else {
+            setMessageInnerHTML("<tr><td align='left' width='100%'>" + obj.fromUser + "对你说：" + obj.message + "</td></tr>");
+          }
+        }
+      }
+
+    };
+
+    //连接关闭的回调事件
+    webSocket.onclose = function () {
+      console.log("连接已关闭...");
+      setMessageInnerHTML("连接已经关闭....");
+    };
+  } else {
+    // 浏览器不支持 WebSocket
+    alert("您的浏览器不支持 WebSocket!");
+  }
+
+  //将消息显示在网页上
+  function setMessageInnerHTML(innerHTML) {
+    document.getElementById('messageTable').innerHTML += innerHTML + '<br/>';
+  }
+
+  function closeWebSocket() {
+    //直接关闭websocket的连接
+    webSocket.close();
+  }
+
+  function send() {
+    var selectText = $("#onLineUser").find("option:selected").text();
+    if (selectText == "--所有--") {
+      selectText = "ALL";
+    } else {
+      setMessageInnerHTML("<tr><td align='right' width='100%'>" + userName + "对" + selectText + "说：" + $("#text").val() + "</td></tr>");
+
+    }
+    var message = {
+      "message": document.getElementById('text').value,
+      "fromUser": userName,
+      "to": selectText,
+      "roomId": roomId,
+      "messageType": 4
+    };
+    webSocket.send(JSON.stringify(message));
+    $("#text").val("");
+  }
+</script>
+</html>
