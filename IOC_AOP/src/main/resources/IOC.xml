@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="school" class="com.study.demo.IOC.bean.School">
+        <property name="name" value="dgut"/>
+        <property name="location" value="gd-dg"/>
+    </bean>
+
+    <bean id="student" class="com.study.demo.IOC.bean.Student">
+        <property name="name" value="yhhu"/>
+        <property name="school" ref="school"/>
+    </bean>
+</beans>
