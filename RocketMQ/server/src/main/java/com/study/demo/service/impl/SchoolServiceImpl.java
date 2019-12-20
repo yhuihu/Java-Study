@@ -25,10 +25,16 @@ public class SchoolServiceImpl implements SchoolService {
     JdbcTemplate jdbcTemplate;
     @Override
     public void saveSchool(School school) {
-        JSONObject jsonObject = new JSONObject();
-        school.setId(UUID.randomUUID().toString().replace("-",""));
-        jsonObject.put("school",school);
-        providerService.send(jsonObject.toJSONString());
+        for (int i = 0; i < 1000; i++) {
+            JSONObject jsonObject = new JSONObject();
+            school.setId(UUID.randomUUID().toString().replace("-",""));
+            jsonObject.put("school",school);
+            providerService.send(jsonObject.toJSONString());
+        }
+//        JSONObject jsonObject = new JSONObject();
+//        school.setId(UUID.randomUUID().toString().replace("-",""));
+//        jsonObject.put("school",school);
+//        providerService.send(jsonObject.toJSONString());
 //        jdbcTemplate.update("insert into school(school_name,city_name,description) values(?,?,?);",school.getName(),school.getCityName(),school.getDescription());
     }
 }

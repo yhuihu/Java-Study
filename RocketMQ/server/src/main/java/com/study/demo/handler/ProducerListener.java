@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2019-10-16
  * @see com.study.demo.handler
  **/
-@RocketMQTransactionListener(txProducerGroup = "tx-demo-group")
+@RocketMQTransactionListener(txProducerGroup = "demo-group")
 public class ProducerListener implements RocketMQLocalTransactionListener {
 
     @Autowired
@@ -57,8 +57,6 @@ public class ProducerListener implements RocketMQLocalTransactionListener {
         } else {
             state = RocketMQLocalTransactionState.UNKNOWN;
         }
-
         return state;
-
     }
 }

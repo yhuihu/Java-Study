@@ -20,9 +20,14 @@ public class ConsumerListener {
     JdbcTemplate jdbcTemplate;
 
     @StreamListener(Sink.INPUT)
+    //默认有ack机制，不抛出异常就是确认消费成功
     public void receive(String receiveMsg) {
-        JSONObject jsonObject = JSONObject.parseObject(receiveMsg);
-        School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
-        System.out.println(school);
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(receiveMsg);
+            School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
+            System.out.println(school);
+        }catch (Exception e){
+            throw new RuntimeException();
+        }
     }
 }
