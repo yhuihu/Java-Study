@@ -7,6 +7,7 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 /**
  * @author Tiger
@@ -21,7 +22,9 @@ public class ProviderService {
     @Autowired
     MySource source;
     public void send(String message) {
-        source.output1().send(MessageBuilder.withPayload(message).build());
+//        source.output1().send(MessageBuilder.withPayload(message).setHeader(RocketMQHeaders.TAGS,"test").build());
+        Random r = new Random();
+        source.output1().send(MessageBuilder.withPayload(message).setHeader("index",r.nextInt(1000)+500).build());
 //        mqTemplate.sendMessageInTransaction("demo-group","test",MessageBuilder.withPayload(message).build(),null);
     }
 

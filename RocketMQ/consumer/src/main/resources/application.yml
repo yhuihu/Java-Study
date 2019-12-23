@@ -1,0 +1,41 @@
+#spring.application.name=rocketmq-consumer
+#spring.cloud.stream.rocketmq.binder.name-server=my.service.com:9876
+##广播模式还是负载均衡模式
+#spring.cloud.stream.rocketmq.bindings.input.consumer.broadcasting=false
+##spring.cloud.stream.rocketmq.bindings.input.consumer.tags=test
+#spring.cloud.stream.rocketmq.bindings.input.consumer.sql='index >= 667'
+#spring.cloud.stream.bindings.input.destination=TransactionTopic
+#spring.cloud.stream.bindings.input.content-type=application/json
+#spring.cloud.stream.bindings.input.group=demo-group
+#spring.cloud.stream.bindings.input.consumer.concurrency=20
+#spring.datasource.url=jdbc:mysql://my.service.com:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+#spring.datasource.username=root
+#spring.datasource.password=123456
+#server.port=9093
+
+server:
+  port: 9093
+spring:
+  application:
+    name: rocketmq-consumer
+  cloud:
+    stream:
+      bindings:
+        input:
+          consumer:
+            concurrency: 20
+          content-type: application/json
+          destination: TransactionTopic
+          group: demo-group
+      rocketmq:
+        binder:
+          name-server: my.service.com:9876
+        bindings:
+          input:
+            consumer:
+              broadcasting: false
+              sql: 'index >= 600'
+  datasource:
+    password: 123456
+    url: jdbc:mysql://my.service.com:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    username: root
