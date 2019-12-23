@@ -22,7 +22,7 @@ public class ProviderService {
     Source source;
     public void send(String message) {
         source.output().send(MessageBuilder.withPayload(message).build());
-//        mqTemplate.sendMessageInTransaction("school_group","test",MessageBuilder.withPayload(message).build(),null);
+//        mqTemplate.sendMessageInTransaction("demo-group","test",MessageBuilder.withPayload(message).build(),null);
     }
 
 }

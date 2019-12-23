@@ -22,4 +22,10 @@ public class MqController {
         schoolService.saveSchool(school);
         return "success";
     }
+
+//    @RequestMapping("test")
+//    public String test(@RequestBody School school){
+//        schoolService.saveSchool(school);
+//        return "success";
+//    }
 }
