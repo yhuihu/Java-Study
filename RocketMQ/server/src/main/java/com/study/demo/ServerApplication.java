@@ -1,9 +1,9 @@
 package com.study.demo;
 
+import com.study.demo.source.MySource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 
 /**
  * @author Tiger
@@ -11,7 +11,7 @@ import org.springframework.cloud.stream.messaging.Source;
  * @see com.study.demo
  **/
 @SpringBootApplication
-@EnableBinding(Source.class)
+@EnableBinding(MySource.class)
 public class ServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);

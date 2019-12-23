@@ -26,6 +26,9 @@ public class ConsumerListener {
             JSONObject jsonObject = JSONObject.parseObject(receiveMsg);
             School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
             System.out.println(school);
+            if("016c2d95b70d4faa9b30fa56a8eea947".equals(school.getId())){
+                throw new Exception("测试");
+            }
         }catch (Exception e){
             throw new RuntimeException();
         }
