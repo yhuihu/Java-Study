@@ -11,7 +11,7 @@ import org.springframework.cloud.stream.messaging.Sink;
  * @see com.study.demo
  **/
 @SpringBootApplication
-@EnableBinding(Sink.class)
+@EnableBinding({Sink.class})
 public class ConsumerApplication {
     public static void main(String[] args) {
         SpringApplication.run(ConsumerApplication.class, args);
