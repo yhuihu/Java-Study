@@ -32,7 +32,6 @@ public class ConsumerListener {
         try {
             JSONObject jsonObject = JSONObject.parseObject(receiveMsg);
             School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
-//            System.out.println("listen" + school.toString());
             String sql = "delete from school where id='" + school.getId() + "'";
             jdbcTemplate.execute(sql);
             addCount();

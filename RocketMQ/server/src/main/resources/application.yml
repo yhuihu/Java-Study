@@ -1,0 +1,34 @@
+#spring.application.name=rocketmq-provider
+#spring.cloud.stream.rocketmq.binder.name-server=my.service.com:9876
+#spring.cloud.stream.rocketmq.bindings.output1.producer.group=demo-group
+#spring.cloud.stream.rocketmq.bindings.output1.producer.transactional=true
+#spring.cloud.stream.bindings.output1.destination=TransactionTopic
+#spring.cloud.stream.bindings.output1.content-type=text/plain
+#spring.datasource.url=jdbc:mysql://my.service.com:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+#spring.datasource.username=root
+#spring.datasource.password=123456
+#server.port=9094
+server:
+  port: 9094
+spring:
+  application:
+    name: rocketmq-provider
+  cloud:
+    stream:
+      bindings:
+        output1:
+          content-type: text/plain
+          destination: TransactionTopic
+      rocketmq:
+        binder:
+          name-server: my.service.com:9876
+        #自定义的名称 对应spring.cloud.stream.bindings.output1
+        bindings:
+          output1:
+            producer:
+              group: demo-group
+              transactional: true
+  datasource:
+    password: 123456
+    url: jdbc:mysql://my.service.com:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    username: root
