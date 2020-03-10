@@ -35,8 +35,8 @@ spring:
           input:
             consumer:
               broadcasting: false
-              sql: 'index >= 600'
-              tags: tag0||tag1
+#              sql: 'index >= 600'
+              tags: tag
   datasource:
     password: 123456
     url: jdbc:mysql://my.service.com:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8

@@ -17,7 +17,7 @@ public class IOC_AOPApplication {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(IOC_AOPApplication.class, args);
         String location= Objects.requireNonNull(IOCLoader.class.getClassLoader().getResource("IOC.xml")).getFile();
-        System.out.println(location.toString());
+        System.out.println(location);
         IOCLoader iocLoader=new IOCLoader(location);
         Student student = (Student) iocLoader.getBean("student");
         System.out.println(student.toString());

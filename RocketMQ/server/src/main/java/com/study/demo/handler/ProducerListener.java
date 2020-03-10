@@ -28,11 +28,11 @@ public class ProducerListener implements RocketMQLocalTransactionListener {
         //消息发送成功回调此方法，此方法执行本地事务
         try {
             //解析消息内容
-            String jsonString = new String((byte[]) message.getPayload());
-            JSONObject jsonObject = JSONObject.parseObject(jsonString);
-            School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
-            jdbcTemplate.update("insert into school (id,cityName,name,description) values (?,?,?,?)", school.getId(), school.getCityName(), school.getName(), school.getDescription());
-            System.out.println(school);
+//            String jsonString = new String((byte[]) message.getPayload());
+//            JSONObject jsonObject = JSONObject.parseObject(jsonString);
+//            School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
+//            jdbcTemplate.update("insert into school (id,cityName,name,description) values (?,?,?,?)", school.getId(), school.getCityName(), school.getName(), school.getDescription());
+//            System.out.println(school);
             return RocketMQLocalTransactionState.COMMIT;
         } catch (Exception e) {
             e.printStackTrace();

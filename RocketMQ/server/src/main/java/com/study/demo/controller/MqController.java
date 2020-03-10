@@ -1,6 +1,7 @@
 package com.study.demo.controller;
 
 import com.study.demo.entity.School;
+import com.study.demo.service.ProviderService;
 import com.study.demo.service.SchoolService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +18,17 @@ import javax.annotation.Resource;
 public class MqController {
     @Resource
     SchoolService schoolService;
+    @Resource
+    ProviderService providerService;
     @RequestMapping("save")
     public String send(@RequestBody School school){
         schoolService.saveSchool(school);
+        return "success";
+    }
+
+    @RequestMapping("send")
+    public String mqSend(){
+        providerService.send("hello");
         return "success";
     }
 

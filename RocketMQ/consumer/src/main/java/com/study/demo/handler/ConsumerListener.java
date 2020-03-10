@@ -1,11 +1,7 @@
 package com.study.demo.handler;
 
-import com.alibaba.fastjson.JSONObject;
-import com.study.demo.entity.School;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +22,20 @@ public class ConsumerListener {
     @Value("${server.port}")
     private String port;
 
-    @StreamListener(Sink.INPUT)
-    //默认有ack机制，不抛出异常就是确认消费成功
-    public void receive(String receiveMsg) {
-        try {
-            JSONObject jsonObject = JSONObject.parseObject(receiveMsg);
-            School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
-            String sql = "delete from school where id='" + school.getId() + "'";
-            jdbcTemplate.execute(sql);
-            addCount();
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
+//    @StreamListener(Sink.INPUT)
+//    //默认有ack机制，不抛出异常就是确认消费成功
+//    public void receive(String receiveMsg) {
+//        try {
+////            JSONObject jsonObject = JSONObject.parseObject(receiveMsg);
+////            School school = JSONObject.parseObject(jsonObject.getString("school"), School.class);
+////            String sql = "delete from school where id='" + school.getId() + "'";
+////            jdbcTemplate.execute(sql);
+////            addCount();
+//            System.out.println(receiveMsg);
+//        } catch (Exception e) {
+//            throw new RuntimeException();
+//        }
+//    }
 
     private synchronized void addCount() {
         Lock lock = new ReentrantLock();

@@ -4,8 +4,9 @@ spring:
   resources:
     static-locations: classpath:/statics/,classpath:/templates/
   redis:
-    host: localhost
+    host: 120.27.243.204
     port: 6379
+    password: ejile
 #添加Thymeleaf配置
 thymeleaf:
   cache: false
