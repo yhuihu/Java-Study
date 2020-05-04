@@ -15,6 +15,7 @@
         <module>RocketMQ</module>
         <module>websocket</module>
         <module>IOC_AOP</module>
+        <module>NIO</module>
     </modules>
 
     <build>

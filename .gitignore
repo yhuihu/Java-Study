@@ -28,10 +28,6 @@ HELP.md
 ### VS Code ###
 .vscode/
 
-*test*
-
-*Test*
-
 application-dev.yml
 
 .DS_Store
