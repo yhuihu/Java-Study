@@ -52,3 +52,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+/design-patterns/target/
+/netty/target/
+/out/
