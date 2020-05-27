@@ -8,12 +8,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="redis" />
+        <module name="ioc_aop" />
         <module name="sort" />
-        <module name="websocket" />
+        <module name="netty" />
         <module name="consumer" />
+        <module name="websocket" />
+        <module name="mongodb" />
         <module name="design-patterns" />
-        <module name="MongoDB" />
-        <module name="IOC_AOP" />
+        <module name="nio" />
         <module name="server" />
         <module name="thread" />
         <module name="simple" />
@@ -31,14 +33,16 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="IOC_AOP" options="-parameters" />
-      <module name="MongoDB" options="-parameters" />
-      <module name="RocketMQ" options="" />
       <module name="WebServer" options="-parameters" />
       <module name="activiti" options="-parameters" />
       <module name="consumer" options="-parameters" />
       <module name="design-patterns" options="-parameters" />
+      <module name="ioc_aop" options="-parameters" />
+      <module name="mongodb" options="-parameters" />
+      <module name="netty" options="-parameters" />
+      <module name="nio" options="-parameters" />
       <module name="redis" options="-parameters" />
+      <module name="rocketmq" options="" />
       <module name="server" options="-parameters" />
       <module name="service" options="-parameters" />
       <module name="simple" options="-parameters" />

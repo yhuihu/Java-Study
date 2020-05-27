@@ -11,6 +11,10 @@
         <option value="$PROJECT_DIR$/websocket/pom.xml" />
         <option value="$PROJECT_DIR$/IOC_AOP/pom.xml" />
         <option value="$PROJECT_DIR$/design-patterns/pom.xml" />
+        <option value="$PROJECT_DIR$/NIO/pom.xml" />
+        <option value="$PROJECT_DIR$/netty/pom.xml" />
+        <option value="$PROJECT_DIR$/spring/pom.xml" />
+        <option value="$PROJECT_DIR$/ioc_aop/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -21,7 +25,7 @@
       </set>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="WebPackConfiguration">

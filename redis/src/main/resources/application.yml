@@ -1,5 +1,5 @@
 spring:
   redis:
-    host: 127.0.0.1
-    port: 6379
-    timeout: 5000
+    cluster:
+      nodes: my.service.com:7001,my.service.com:7002,my.service.com:7003,my.service.com:7004,my.service.com:7005,my.service.com:7006
+    password: yang123(*&

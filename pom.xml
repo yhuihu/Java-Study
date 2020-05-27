@@ -14,8 +14,8 @@
         <module>redis</module>
         <module>RocketMQ</module>
         <module>websocket</module>
-        <module>IOC_AOP</module>
-        <module>NIO</module>
+        <module>nio</module>
+        <module>ioc_aop</module>
     </modules>
 
     <build>
