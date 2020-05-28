@@ -10,9 +10,9 @@
     <modules>
         <module>thread</module>
         <module>sort</module>
-        <module>MongoDB</module>
+        <module>mongodb</module>
         <module>redis</module>
-        <module>RocketMQ</module>
+        <module>rocketmq</module>
         <module>websocket</module>
         <module>nio</module>
         <module>ioc_aop</module>
