@@ -33,7 +33,7 @@ public class Server {
             while (it.hasNext()) {
                 //8.获取准备“就绪”的事件
                 SelectionKey sk = it.next();
-                //9.判断具体是什么时间准备就绪
+                //9.判断具体是什么状态就绪
                 if (sk.isAcceptable()) {
                     //10.若“接收就绪”，获取客户端连接
                     SocketChannel sChannel = ssChannel.accept();
@@ -46,7 +46,7 @@ public class Server {
                     SocketChannel sChannel = (SocketChannel) sk.channel();
                     //14.读取数据
                     ByteBuffer buf = ByteBuffer.allocate(1024);
-                    int len = 0;
+                    int len;
                     while ((len = sChannel.read(buf)) > 0) {
                         buf.flip();
                         System.out.println(new String(buf.array(), 0, len));
