@@ -24,15 +24,19 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<HttpObject> 
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
         Channel channel = ctx.channel();
         if (msg instanceof HttpRequest) {
-            System.out.println("msg类型：" + msg.getClass());
-            System.out.println("客户端地址：" + channel.remoteAddress());
-            if (((HttpRequest) msg).uri().contains("icon")) {
+            //浏览器请求会要求获取一次网站图标，将这个请求过滤掉
+            if (((HttpRequest) msg).uri().contains("favicon.ico")) {
                 System.out.println("无效请求");
                 return;
             }
+            System.out.println("msg类型：" + msg.getClass());
+            System.out.println("客户端地址：" + channel.remoteAddress());
             ByteBuf byteBuf = Unpooled.copiedBuffer("hello，这是服务器给你返回的消息", CharsetUtil.UTF_16);
+            //创建一个响应对象
             FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, byteBuf);
+            //设置响应类型
             fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE,"text/plain");
+            //设置内容
             fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_LENGTH,byteBuf.readableBytes());
             channel.writeAndFlush(fullHttpResponse);
         }
