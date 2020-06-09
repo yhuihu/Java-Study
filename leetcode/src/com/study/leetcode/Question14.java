@@ -2,7 +2,7 @@ package com.study.leetcode;
 
 /**
  * @author Tiger
- * @date 2020-05-19
+ * @date 2020-06-09
  * @see com.study.leetcode
  **/
 public class Question14 {
@@ -28,15 +28,15 @@ public class Question14 {
      * 链接：https://leetcode-cn.com/problems/longest-common-prefix
      * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
      */
-    public String longestCommonPrefix(String[] strs) {
-        if (strs.length == 0) {
+    public String solution(String[] str) {
+        if (str.length == 0) {
             return "";
         }
-        String ans = strs[0];
-        for (int i = 1; i < strs.length; i++) {
+        String ans = str[0];
+        for (int i = 1; i < str.length; i++) {
             int j = 0;
-            for (; j < ans.length() && j < strs[i].length(); j++) {
-                if (ans.charAt(j) != strs[i].charAt(j)) {
+            for (; j < ans.length() && j < str[i].length(); j++) {
+                if (ans.charAt(j) != str[i].charAt(j)) {
                     break;
                 }
             }
