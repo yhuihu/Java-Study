@@ -16,6 +16,7 @@
         <module>websocket</module>
         <module>nio</module>
         <module>ioc_aop</module>
+        <module>mybatis_plus</module>
     </modules>
 
     <build>
