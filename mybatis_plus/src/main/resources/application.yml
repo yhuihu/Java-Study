@@ -1,0 +1,21 @@
+server:
+  port: 8080
+# DataSource Config
+spring:
+  datasource:
+    password: 123456
+    url: jdbc:mysql://my.service.com:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    locations: ["classpath:db"]
+    baseline-on-migrate: true
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.study.mybatis.entity
+  check-config-location: true
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.study.mybatis.mapper: debug
