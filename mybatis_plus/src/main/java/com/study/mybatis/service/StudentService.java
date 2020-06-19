@@ -9,5 +9,7 @@ import com.study.mybatis.entity.Student;
  * @see com.study.mybatis.service
  **/
 public interface StudentService extends IService<Student> {
-    public void transactionalServiceStudent(String schoolId) throws Exception;
+    public void transactionalDefaultStudent(String schoolId) throws Exception;
+
+    public void transactionalSupportStudent() throws Exception;
 }

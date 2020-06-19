@@ -7,6 +7,7 @@ import com.study.mybatis.service.StudentService;
 import com.study.mybatis.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -24,8 +25,8 @@ public class TestServiceImpl extends ServiceImpl<SchoolMapper, School> implement
     StudentService studentService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void transactionalServiceSchool() throws Exception {
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public void transactionalDefaultSchool() throws Exception {
         for (int i = 0; i < 1000; i++) {
             School school = new School();
             school.setCityname("sz");
@@ -34,10 +35,15 @@ public class TestServiceImpl extends ServiceImpl<SchoolMapper, School> implement
             school.setId(s);
             school.setName(String.valueOf(i));
             schoolMapper.insert(school);
-            studentService.transactionalServiceStudent(s);
+            studentService.transactionalDefaultStudent(s);
             if (i == 95) {
                 throw new Exception();
             }
         }
+    }
+
+    @Override
+    public void transactionalSupportSchool() throws Exception {
+
     }
 }

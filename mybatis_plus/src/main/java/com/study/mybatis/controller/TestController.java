@@ -53,6 +53,6 @@ public class TestController {
 
     @PostMapping("/transactional")
     public void transactional() throws Exception {
-        testService.transactionalServiceSchool();
+        testService.transactionalDefaultSchool();
     }
 }
