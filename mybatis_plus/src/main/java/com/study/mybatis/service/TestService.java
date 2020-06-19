@@ -9,4 +9,5 @@ import com.study.mybatis.entity.School;
  * @see com.study.mybatis.service
  **/
 public interface TestService extends IService<School> {
+    public void transactionalServiceSchool() throws Exception;
 }

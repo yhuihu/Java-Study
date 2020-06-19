@@ -50,4 +50,9 @@ public class TestController {
         }
         studentService.saveOrUpdateBatch(list);
     }
+
+    @PostMapping("/transactional")
+    public void transactional() throws Exception {
+        testService.transactionalServiceSchool();
+    }
 }
