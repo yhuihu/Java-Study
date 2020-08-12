@@ -17,6 +17,7 @@
         <module>nio</module>
         <module>ioc_aop</module>
         <module>mybatis_plus</module>
+        <module>freemarker</module>
     </modules>
 
     <build>
