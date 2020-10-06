@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Random;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * @author Tiger
@@ -24,6 +25,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public void transactionalDefaultStudent(String schoolId) throws Exception {
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
         for (int i = 0; i < 100; i++) {
             Student student = new Student();
             Random random = new Random();

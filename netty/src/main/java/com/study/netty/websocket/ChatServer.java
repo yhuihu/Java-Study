@@ -20,7 +20,7 @@ import io.netty.handler.logging.LoggingHandler;
  * @see com.study.netty.websocket
  **/
 public class ChatServer {
-    private int port;
+    private final int port;
 
     ChatServer(int port) {
         this.port = port;
@@ -46,7 +46,7 @@ public class ChatServer {
                 pipeline.addLast(new ChatServerHandler());
             }
         });
-        ChannelFuture sync = serverBootstrap.bind(8080).sync();
+        ChannelFuture sync = serverBootstrap.bind(port).sync();
         sync.channel().closeFuture().sync();
     }
 

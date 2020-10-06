@@ -19,7 +19,7 @@ import java.util.Set;
 @RestController
 public class SetController {
     @Resource
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, School> redisTemplate;
 
     @PostMapping("Set")
     public Set<School> saveSchool(@RequestBody School school) {
