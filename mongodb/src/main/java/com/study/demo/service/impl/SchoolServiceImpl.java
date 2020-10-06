@@ -38,7 +38,7 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public List<School> findAllSchool() {
-        Sort sort=new Sort(Sort.Direction.DESC,"id");
+        Sort sort = Sort.by("id").descending();
         return schoolRepository.findAll(sort);
     }
 
