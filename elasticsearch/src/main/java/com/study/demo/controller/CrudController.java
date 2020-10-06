@@ -25,7 +25,7 @@ import java.util.HashMap;
  * @see com.study.demo.controller
  **/
 @RestController
-public class TestController {
+public class CrudController {
     @Autowired
     UserRepository userRepository;
 
@@ -54,8 +54,9 @@ public class TestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("id")
-    public ResponseEntity<Void> updateData(@PathVariable(name = "id") String id, User user) {
+    @PutMapping()
+    public ResponseEntity<Void> updateData(@RequestBody User user) {
+        userRepository.save(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
