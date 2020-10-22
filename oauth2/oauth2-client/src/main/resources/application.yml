@@ -1,0 +1,8 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: auth
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss

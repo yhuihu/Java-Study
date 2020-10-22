@@ -1,0 +1,27 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: oauth2-server
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    host: my.service.com
+    port: 6379
+    password: 123456
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://my.service.com:3306/oauth?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+  flyway:
+    locations: [ "classpath:db" ]
+    baseline-on-migrate: true
+    placeholder-prefix: ${} # 占位符去掉，数据库数据存在冲突
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.study.mybatis.entity
+  check-config-location: true
+  configuration:
+    map-underscore-to-camel-case: true
