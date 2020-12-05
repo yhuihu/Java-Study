@@ -1,0 +1,2 @@
+selenium:
+  driver-path: D:\\bankcomm\\local\\chromedriver_win32\\chromedriver.exe

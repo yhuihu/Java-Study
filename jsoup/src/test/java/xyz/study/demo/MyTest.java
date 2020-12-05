@@ -36,7 +36,6 @@ public class MyTest {
         connect.timeout(99999999);
         connect.headers(map);
         Connection.Response execute = connect.execute();
-        Object hello = JSONObject.parse("hello");
         FundData fundData = JSONObject.parseObject(execute.body().split("var rankData = ")[1].split(";")[0], FundData.class);
         fundData.getDatas().forEach(System.out::println);
     }
