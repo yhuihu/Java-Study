@@ -17,7 +17,7 @@ import java.nio.channels.ReadableByteChannel;
  **/
 public class NetDownload {
     public static void main(String[] args) throws IOException {
-        URL url = new URL("http://yhhu.xyz/K5mTKNtHGrOylzz3g7eLH9g6");
+        URL url = new URL("https://yhhu.oss-cn-shenzhen.aliyuncs.com/20170513133210763.jpg");
         HttpURLConnection httpcon = (HttpURLConnection) url.openConnection();
         httpcon.addRequestProperty("User-Agent", "Mozilla/4.0");
         InputStream inputStream = httpcon.getInputStream();
