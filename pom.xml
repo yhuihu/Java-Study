@@ -23,6 +23,8 @@
         <module>oauth2</module>
         <module>design-patterns</module>
         <module>jsoup</module>
+        <module>selenium</module>
+        <module>reflect</module>
     </modules>
     <dependencyManagement>
         <dependencies>
