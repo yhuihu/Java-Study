@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import ExcelUtil from './excelUtil';
 
 class Square extends React.Component {
     render() {
@@ -27,14 +28,10 @@ class Board extends React.Component {
     handleClick(i) {
         const squares = this.state.squares.slice();
         let count = this.state.count;
-        if (this.state.count % 2 === 0) {
-            squares[i] = 'X';
-        } else {
-            squares[i] = 'O'
-        }
-        console.log(count)
+        squares[i] = this.state.count % 2 === 0 ? 'X' : 'O';
         this.setState({count: ++count})
         this.setState({squares: squares});
+
     }
 
     renderSquare(i) {
@@ -47,8 +44,7 @@ class Board extends React.Component {
     }
 
     render() {
-        const status = 'Next player: X';
-
+        let status = 'Next player: X';
         return (
             <div>
                 <div className="status">{status}</div>
@@ -73,7 +69,38 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+
     render() {
+        const initColumn = [{
+            title: '姓名',
+            dataIndex: 'name',
+            key: 'name',
+            className: 'text-monospace',
+        }, {
+            title: '年级',
+            dataIndex: 'grade',
+            key: 'grade',
+        }, {
+            title: '部门',
+            dataIndex: 'department',
+            key: 'department',
+        }];
+
+
+        let attendanceInfoList = [
+            {
+                name:"张三",
+                grade:"2017级",
+                department:"前端部门"
+
+            },
+            {
+                name:"李四",
+                grade:"2017级",
+                department:"程序部门"
+
+            }];
+
         return (
             <div className="game">
                 <div className="game-board">
@@ -83,6 +110,8 @@ class Game extends React.Component {
                     <div>{/* status */}</div>
                     <ol>{/* TODO */}</ol>
                 </div>
+                <input type='file' accept='.xlsx, .xls' onChange={(e)=>{ExcelUtil.importExcel(e)} }/>
+                <button type="primary" onClick={() => {ExcelUtil.exportExcel(initColumn, attendanceInfoList,"人员名单.xlsx")}}>导出</button>
             </div>
         );
     }
@@ -92,3 +121,23 @@ ReactDOM.render(
     <Game/>,
     document.getElementById('root')
 );
+
+function calculateWinner(squares) {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a];
+        }
+    }
+    return null;
+}
