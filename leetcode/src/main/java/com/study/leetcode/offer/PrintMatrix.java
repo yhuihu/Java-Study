@@ -9,37 +9,49 @@ import java.util.ArrayList;
  */
 public class PrintMatrix {
     public ArrayList<Integer> printMatrix(int[][] matrix) {
+        // 行
+        int row = matrix.length;
+        // 列
+        int col = matrix[0].length;
         ArrayList<Integer> list = new ArrayList<>();
         // 定义四个角落初始位置
-        int topLeftStart = 0, topRightStart = matrix.length - 1, bottomLeftStart = 0, bottomRightStart = matrix[0].length - 1;
-        while (topLeftStart <= topRightStart && bottomLeftStart <= bottomRightStart) {
+        int top = 0, bottom = row - 1, left = 0, right = col - 1;
+        while (top <= bottom && left <= right) {
             // 上边左向右
-            for (int j = topLeftStart; j < bottomRightStart; j++) {
-                list.add(matrix[topLeftStart][j]);
+            for (int j = left; j < right; j++) {
+                list.add(matrix[top][j]);
             }
             // 右边上往下
-            for (int j = topLeftStart; j < topRightStart; j++) {
-                list.add(matrix[j][bottomRightStart]);
+            for (int j = top; j < bottom; j++) {
+                list.add(matrix[j][right]);
             }
             // 下边右往左
-            for (int j = bottomRightStart; j > bottomLeftStart; j--) {
-                list.add(matrix[bottomLeftStart][j]);
+            for (int j = right; j > left; j--) {
+                list.add(matrix[bottom][j]);
             }
-            for (int j = bottomLeftStart; j > topLeftStart; j--) {
-                list.add(matrix[topLeftStart][j]);
+            // 左边下往上
+            for (int j = bottom; j > top; j--) {
+                list.add(matrix[j][left]);
             }
             // 指针移动
-            topLeftStart++;
-            topRightStart--;
-            bottomLeftStart++;
-            bottomRightStart--;
+            top++;
+            bottom--;
+            left++;
+            right--;
         }
         return list;
     }
 
+    /**
+     *  1  2  3  4
+     *  5  6  7  8
+     *  9 10 11 12
+     * 13 14 15 16
+     * @param args
+     */
     public static void main(String[] args) {
         PrintMatrix matrix = new PrintMatrix();
-        int[][] array = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}};
+        int[][] array = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8},{9, 10, 11, 12},{13, 14, 15, 16}};
         System.out.println(matrix.printMatrix(array));
     }
 }
