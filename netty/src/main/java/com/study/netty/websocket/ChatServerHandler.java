@@ -32,6 +32,7 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<TextWebSocket
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        ctx.close();
         System.out.println(ctx.channel().remoteAddress() + "离开了");
     }
 }

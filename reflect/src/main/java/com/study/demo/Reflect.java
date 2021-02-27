@@ -89,6 +89,8 @@ public class Reflect {
         }
         School o = (School)newClass.newInstance();
         Method setName = newClass.getMethod("setSchoolName", String.class);
+//     * <p>If the underlying method is static, then the specified {@code obj}
+//     * argument is ignored. It may be null.
         setName.invoke(o, "Hello");
         System.out.println(o);
     }

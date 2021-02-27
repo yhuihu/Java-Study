@@ -58,4 +58,15 @@ public class MyTest {
         Map<String, Object> hotTopicByWeek = JSONObject.parseObject(body.substring(5, body.length() - 1), Map.class);
         System.out.println(hotTopicByWeek);
     }
+
+    @Test
+    public void testPlugin() throws IOException {
+        String url = "https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=200&plat=Android&appType=ttjj&product=EFund&Version=1&deviceid=e2064f69-3af6-426d-a1e5-aa6e9a5452da&Fcodes=001606,519126,519736,001630,008282";
+        Map<String, String> map = new HashMap<>();
+        map.put("Host", "fundmobapi.eastmoney.com");
+        Connection connect = Jsoup.connect(url).ignoreContentType(true);
+        Connection.Response execute = connect.execute();
+        String body = execute.body();
+        System.out.println(body);
+    }
 }

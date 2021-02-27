@@ -22,9 +22,9 @@ public class ScheduledMessageConsumer {
     public static void main(String[] args) throws Exception {
         // 实例化消费者
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("ExampleConsumer");
-        consumer.setNamesrvAddr("my.service.com:9876");
+        consumer.setNamesrvAddr("127.0.0.1:9876");
         // 订阅Topics
-        consumer.subscribe("TestTopic", "*");
+        consumer.subscribe("studyTopic", "*");
         // 注册消息监听者
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override

@@ -34,7 +34,9 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             //给我们的workerGroup的EventLoop对应的管道设置处理器
-                            ch.pipeline().addLast(new NettyServerHandler());
+                            ch.pipeline().addLast(
+                                    new NettyServerHandler()
+                            );
                         }
                     });
             System.out.println("..服务器 is ready");

@@ -39,6 +39,7 @@ public class ChatServer {
                 ChannelPipeline pipeline = ch.pipeline();
                 //http加解码
                 pipeline.addLast(new HttpServerCodec());
+                pipeline.addLast(new LoggingHandler());
                 //请求长度限制
                 pipeline.addLast(new HttpObjectAggregator(8972));
                 //websocket连接端点

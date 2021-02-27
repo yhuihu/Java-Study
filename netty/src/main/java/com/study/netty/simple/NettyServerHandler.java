@@ -28,6 +28,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         ByteBuf byteBuf = (ByteBuf) msg;
         System.out.println("客户端发送的消息是：" + byteBuf.toString(CharsetUtil.UTF_8));
         System.out.println("客户端地址：" + ctx.channel().remoteAddress());
+//        兼容旧的tcp请求
+        ctx.writeAndFlush(Unpooled.copiedBuffer("hello,客户端", CharsetUtil.UTF_8));
     }
 
     /**
@@ -39,6 +41,9 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         //write方法+flush方法，将数据写入缓存并刷新，一般讲，我们对这个发送的数据进行编码
+        // 这是channle调用 最终是执行链子的 就是全部都会执行
+//        ctx.channel().writeAndFlush();
+//        这个呢
         ctx.writeAndFlush(Unpooled.copiedBuffer("hello,客户端", CharsetUtil.UTF_8));
     }
 

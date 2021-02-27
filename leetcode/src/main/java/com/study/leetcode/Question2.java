@@ -58,7 +58,4 @@ public class Question2 {
         return listNode.next;
     }
 
-    public static void main(String[] args) {
-
-    }
 }
