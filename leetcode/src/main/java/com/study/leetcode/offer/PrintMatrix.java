@@ -14,7 +14,7 @@ public class PrintMatrix {
         // 列
         int col = matrix[0].length;
         ArrayList<Integer> list = new ArrayList<>();
-        // 定义四个角落初始位置
+        // 定义上下左右初始位置
         int top = 0, bottom = row - 1, left = 0, right = col - 1;
         while (top <= bottom && left <= right) {
             // 上边左向右
