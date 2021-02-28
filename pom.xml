@@ -25,10 +25,10 @@
         <module>jsoup</module>
         <module>selenium</module>
         <module>reflect</module>
-        <module>spring-annotation</module>
+<!--        <module>spring-annotation</module>-->
         <module>excel</module>
-        <module>reactor</module>
-        <module>jsch</module>
+<!--        <module>reactor</module>-->
+<!--        <module>jsch</module>-->
         <module>leetcode</module>
     </modules>
     <dependencyManagement>

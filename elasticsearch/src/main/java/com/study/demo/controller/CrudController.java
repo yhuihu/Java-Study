@@ -37,6 +37,7 @@ public class CrudController {
         HashMap<String, Object> map = new HashMap<>();
         Sort sort = Sort.by("id").descending();
         Pageable pageable = PageRequest.of(0, 10, sort);
+        userRepository.findAll();
         Page<User> all = userRepository.findAll(pageable);
         map.put("user", all.getContent());
         return new ResponseEntity<>(map, HttpStatus.OK);
