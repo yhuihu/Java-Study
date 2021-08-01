@@ -29,6 +29,7 @@
 <!--        <module>reactor</module>-->
         <module>jsch</module>
         <module>leetcode</module>
+        <module>juc</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -41,6 +42,10 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+
+
+
     <build>
         <resources>
             <resource>
