@@ -12,18 +12,18 @@ var MysqlDb *sql.DB
 var MysqlDbErr error
 
 const (
-	USER_NAME = "root"
-	PASS_WORD = "jsw135799"
-	HOST      = "115.29.243.4"
-	PORT      = "3306"
-	DATABASE  = "blog"
-	CHARSET   = "utf8"
+	UserName = "root"
+	PassWord = "jsw135799"
+	HOST     = "115.29.243.4"
+	PORT     = "3306"
+	DATABASE = "blog"
+	CHARSET  = "utf8"
 )
 
 // 初始化链接
 func init() {
 
-	dbDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", USER_NAME, PASS_WORD, HOST, PORT, DATABASE, CHARSET)
+	dbDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", UserName, PassWord, HOST, PORT, DATABASE, CHARSET)
 
 	// 打开连接失败
 	MysqlDb, MysqlDbErr = sql.Open("mysql", dbDSN)
