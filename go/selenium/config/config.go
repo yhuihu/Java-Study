@@ -9,6 +9,7 @@ import (
 const (
 	DRIVER_PATH = "go.selenium.driverPath"
 	SAVE_PATH   = "go.selenium.savePath"
+	URL         = "go.selenium.url"
 )
 
 var VIPER *viper.Viper

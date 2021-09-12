@@ -1,6 +1,6 @@
 go:
   selenium:
-    url: https://www.baidu.com
+    url: https://www.hermes.cn/
     savePath: D:\\tmp\\
     driverPath: D:\tmp\msedgedriver.exe
     port: 19080

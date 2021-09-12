@@ -28,6 +28,7 @@ func NewCrawler() (*Crawler, error) {
 	opts := []selenium.ServiceOption{
 		selenium.Output(os.Stderr),
 	}
+	selenium.SetDebug(false)
 	service, err := selenium.NewChromeDriverService(crawler.ChromeDriver, crawler.Port, opts...)
 	if nil != err {
 		return nil, errors.New("start a chromedriver service failed," + err.Error())
