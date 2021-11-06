@@ -1,8 +1,0 @@
-go:
-  config:
-    #    链接
-    url: http://javdb32.com/
-    #    关键字
-    keyword: 推荐
-    #    页数
-    pageSize: 10
