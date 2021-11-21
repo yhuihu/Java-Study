@@ -19,10 +19,14 @@ leetcode 31题 下一个排列
 //
 func nextPermutation(nums []int) {
 	n := len(nums)
+
+	// 1.从后往前遍历，找到第一个n-1比n大的位置
 	i := n - 2
 	for i >= 0 && nums[i] >= nums[i+1] {
 		i--
 	}
+
+	// 2.找到第一个顺序对后，从后往前找到第一个比nums[i]小的数字，交换这两个数字
 	if i >= 0 {
 		j := n - 1
 		for j >= 0 && nums[i] >= nums[j] {
@@ -30,6 +34,8 @@ func nextPermutation(nums []int) {
 		}
 		nums[i], nums[j] = nums[j], nums[i]
 	}
+
+	// 由于第一步中从后往前找了一遍升序序列，因此从nums[i]开始，肯定是降序的，因此，要将nums[i]后的顺序全部倒过来
 	reverse(nums[i+1:])
 }
 
