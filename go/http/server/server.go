@@ -2,6 +2,7 @@ package server
 
 import (
 	"../context"
+	"../filter"
 	"fmt"
 	"net/http"
 )
@@ -12,7 +13,7 @@ type Routable interface {
 }
 
 type Handler interface {
-	http.Handler
+	ServerHTTP(c *context.Context)
 	Routable
 }
 
@@ -24,6 +25,7 @@ type Server interface {
 type sdkHttpServer struct {
 	Name    string
 	handler Handler
+	root    filter.Filter
 }
 
 func (s *sdkHttpServer) Route(method string, pattern string, handleFunc func(ctx *context.Context)) {
@@ -31,16 +33,34 @@ func (s *sdkHttpServer) Route(method string, pattern string, handleFunc func(ctx
 }
 
 func (s *sdkHttpServer) Start(address string) error {
-	http.Handle("/", s.handler)
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		c := context.NewContext(writer, request)
+		s.root(c)
+	})
 	return http.ListenAndServe(address, nil)
 }
 
 var _ Server = &sdkHttpServer{}
 
-func NewHttpServer(name string) Server {
+func NewHttpServer(name string, filterBuilders ...filter.Builder) Server {
+	handler := NewHandlerBaseOnMap()
+
+	// 必须要经过的拦截器
+	var rootFilter filter.Filter = func(c *context.Context) {
+		fmt.Println("进入业务处理逻辑")
+		handler.ServerHTTP(c)
+	}
+
+	for i := len(filterBuilders) - 1; i >= 0; i-- {
+		filterBuilder := filterBuilders[i]
+		// 一层层往外包，最后调用的是handler.ServerHTTP(c)
+		rootFilter = filterBuilder(rootFilter)
+	}
 	return &sdkHttpServer{
 		Name:    name,
-		handler: NewHandlerBaseOnMap(),
+		handler: handler,
+		// 这里使用自己实现的MetricsFilterBuilder保证方法一定被计时
+		root: filter.MetricsFilterBuilder(rootFilter),
 	}
 }
 
@@ -49,13 +69,13 @@ type HandlerBasedOnMap struct {
 	handlers map[string]func(ctx *context.Context)
 }
 
-func (h *HandlerBasedOnMap) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	key := h.key(request.Method, request.URL.Path)
+func (h *HandlerBasedOnMap) ServerHTTP(c *context.Context) {
+	key := h.key(c.R.Method, c.R.URL.Path)
 	if handler, ok := h.handlers[key]; ok {
-		handler(context.NewContext(writer, request))
+		handler(c)
 	} else {
-		writer.WriteHeader(http.StatusNotFound)
-		_, err := writer.Write([]byte("source not exist"))
+		c.W.WriteHeader(http.StatusNotFound)
+		_, err := c.W.Write([]byte("source not exist"))
 		if err != nil {
 			fmt.Println("message handle error")
 		}
