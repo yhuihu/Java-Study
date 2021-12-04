@@ -1,7 +1,7 @@
 package filter
 
 import (
-	"../context"
+	"example.com/golang/http/context"
 	"fmt"
 	"time"
 )

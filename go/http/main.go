@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./context"
-	"./filter"
-	"./server"
+	"example.com/golang/http/context"
+	"example.com/golang/http/filter"
+	"example.com/golang/http/server"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -27,11 +27,9 @@ func main() {
 		// 这里假定所有的请求报文都是json格式
 		_, err := ioutil.ReadAll(body)
 		if err != nil {
-			ctx.W.WriteHeader(http.StatusInternalServerError)
-			ctx.W.Write([]byte("服务端解析异常"))
+			ctx.FailResponse("服务端解析异常", nil)
 		} else {
-			ctx.W.WriteHeader(http.StatusOK)
-			ctx.W.Write([]byte("这是正常返回了"))
+			ctx.SuccessResponse("这是正常返回了", nil)
 		}
 	})
 

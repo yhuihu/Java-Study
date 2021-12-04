@@ -1,8 +1,8 @@
 package server
 
 import (
-	"../context"
-	"../filter"
+	"example.com/golang/http/context"
+	"example.com/golang/http/filter"
 	"fmt"
 	"net/http"
 )
