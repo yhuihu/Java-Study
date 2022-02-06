@@ -30,6 +30,7 @@
         <module>jsch</module>
         <module>leetcode</module>
         <module>juc</module>
+        <module>jpa</module>
     </modules>
     <dependencyManagement>
         <dependencies>
