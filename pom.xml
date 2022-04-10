@@ -31,6 +31,7 @@
         <module>leetcode</module>
         <module>juc</module>
         <module>jpa</module>
+        <module>jgroups</module>
     </modules>
     <dependencyManagement>
         <dependencies>
