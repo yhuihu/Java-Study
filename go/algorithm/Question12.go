@@ -68,15 +68,15 @@ var valueSymbols = []struct {
 }
 
 func intToRoman(num int) string {
-	roman := []byte{}
+	roman := ""
 	for _, vs := range valueSymbols {
 		for num >= vs.value {
 			num -= vs.value
-			roman = append(roman, vs.symbol...)
+			roman += vs.symbol
 		}
 		if num == 0 {
 			break
 		}
 	}
-	return string(roman)
+	return roman
 }
