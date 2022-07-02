@@ -35,6 +35,7 @@ public class NettyServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             //给我们的workerGroup的EventLoop对应的管道设置处理器
                             ch.pipeline().addLast(
+                                    // 这里并不完善，会出现断包的情况，因此需要额外添加拆解包工具 参考LengthFieldBasedFrameDecoder
                                     new NettyServerHandler()
                             );
                         }

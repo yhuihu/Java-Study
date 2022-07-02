@@ -31,6 +31,7 @@ public class NettyClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
+                            // 同server端问题，应当加上拆解包工具
                             ch.pipeline().addLast(new NettyClientHandler());
                         }
                     });
