@@ -1,13 +1,11 @@
 package com.study.comsumer.queue.template;
 
 import com.study.comsumer.queue.handle.Handle;
-import com.sun.deploy.security.BlacklistedCerts;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
+import com.study.comsumer.queue.handle.HandleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -18,6 +16,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public abstract class AbstractQueueTemplate<T> implements Runnable {
 
+    volatile Thread thread;
+
     public AbstractQueueTemplate() {
 
     }
@@ -25,6 +25,11 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
     public AbstractQueueTemplate(Queue<T> queue, Integer maxCount) {
         this.queue = queue;
         this.maxCount = maxCount;
+    }
+
+    public AbstractQueueTemplate(List<Handle<T>> handleList) {
+        this.sortHandleList(handleList);
+        this.handleList = handleList;
     }
 
     public List<Handle<T>> handleList = new ArrayList<>();
@@ -44,8 +49,14 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
     public void handle() throws InterruptedException {
         // 队列没有消息，等待一段时间
         if (queue.size() <= 0) {
+            logger.debug("no message , wait 3s");
             this.wait(3000L);
+            logger.debug("end wait");
         }
+        handleMsg();
+    }
+
+    public void handleMsg() {
         T pop;
         while ((pop = pop()) != null) {
             for (Handle<T> tHandle : handleList) {
@@ -60,6 +71,9 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      * @param target 消息体
      */
     public void add(T target) {
+
+        verifyThread();
+
         if (queue.size() > maxCount) {
             logger.error("queue count is full");
             this.notifyAll();
@@ -96,4 +110,48 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
+    void sortHandleList(List<Handle<T>> list, String... args) {
+        List<Handle<T>> handleList = new ArrayList<>();
+        for (Handle<T> tHandle : list) {
+            HandleInfo annotation = tHandle.getClass().getAnnotation(HandleInfo.class);
+            String[] subscribe = annotation.subscribe();
+            List<String> subscribeList = Arrays.asList(subscribe);
+            for (String arg : args) {
+                if (subscribeList.contains(arg)) {
+                    handleList.add(tHandle);
+                }
+            }
+        }
+        sortHandleList(handleList);
+
+        this.handleList = handleList;
+    }
+
+    /**
+     * 责任链排序
+     *
+     * @param list 消息处理实现类
+     */
+    void sortHandleList(List<Handle<T>> list) {
+        list.sort(Comparator.comparingInt(Handle::getOrder));
+    }
+
+    /**
+     * 校验线程是否开始跑了，懒汉
+     */
+    private void verifyThread() {
+        if (thread == null) {
+            synchronized (thread) {
+                if (thread == null) {
+                    logger.info("{} thread is not start , begin to init thread", this.getClass().getName());
+                    thread = new Thread(this);
+                    thread.setDaemon(true);
+                    thread.start();
+                    logger.info("{} thread is start", this.getClass().getName());
+                }
+            }
+        }
+    }
+
 }
