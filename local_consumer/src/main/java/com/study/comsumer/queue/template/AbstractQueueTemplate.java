@@ -18,6 +18,8 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
 
     volatile Thread thread;
 
+    static Object LOCK_OBJ = new Object();
+
     public AbstractQueueTemplate() {
 
     }
@@ -48,7 +50,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
 
     List<String> subscribeList = new ArrayList<>();
 
-    public void handle() throws InterruptedException {
+    public synchronized void handle() throws InterruptedException {
         // 队列没有消息，等待一段时间
         if (queue.size() <= 0) {
             logger.debug("no message , wait 3s");
@@ -72,7 +74,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      *
      * @param target 消息体
      */
-    public void add(T target) {
+    public synchronized void add(T target) {
 
         if (!verifyMsg(target)) {
             return;
@@ -150,7 +152,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      */
     private void verifyThread() {
         if (thread == null) {
-            synchronized (thread) {
+            synchronized (LOCK_OBJ) {
                 if (thread == null) {
                     logger.info("{} thread is not start , begin to init thread", this.getClass().getName());
                     thread = new Thread(this);
