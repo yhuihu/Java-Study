@@ -46,6 +46,8 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      */
     private Integer maxCount = 10000;
 
+    List<String> subscribeList = new ArrayList<>();
+
     public void handle() throws InterruptedException {
         // 队列没有消息，等待一段时间
         if (queue.size() <= 0) {
@@ -71,6 +73,10 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      * @param target 消息体
      */
     public void add(T target) {
+
+        if (!verifyMsg(target)) {
+            return;
+        }
 
         verifyThread();
 
@@ -116,10 +122,12 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
         for (Handle<T> tHandle : list) {
             HandleInfo annotation = tHandle.getClass().getAnnotation(HandleInfo.class);
             String[] subscribe = annotation.subscribe();
-            List<String> subscribeList = Arrays.asList(subscribe);
+            List<String> tmpSubscribeList = Arrays.asList(subscribe);
             for (String arg : args) {
-                if (subscribeList.contains(arg)) {
+                if (tmpSubscribeList.contains(arg)) {
                     handleList.add(tHandle);
+                    // 添加关注消息
+                    this.subscribeList.add(arg);
                 }
             }
         }
@@ -154,4 +162,14 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
         }
     }
 
+    /**
+     * 校验消息是否需要进行处理
+     *
+     * @param msg
+     * @return
+     */
+    boolean verifyMsg(T msg) {
+        Map<String, Object> map = (Map<String, Object>) msg;
+        return subscribeList.contains(map.get("subscribe"));
+    }
 }
