@@ -57,8 +57,8 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
             for (Handle<T> tHandle : handleList) {
                 tHandle.handle(pop);
             }
-            //线程被中断，跳出循环，线程停止
-            if (Thread.currentThread().isInterrupted()) {
+            //线程被中断，跳出循环，线程停止   个人认为应当保证消息被消费完整
+            if (Thread.currentThread().isInterrupted() && queue.size() == 0) {
                 break;
             }
         }
