@@ -24,8 +24,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
 
     }
 
-    public AbstractQueueTemplate(Queue<T> queue, Integer maxCount) {
-        this.queue = queue;
+    public AbstractQueueTemplate(Integer maxCount) {
         this.maxCount = maxCount;
     }
 
@@ -41,7 +40,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
     /**
      * 存储消息的队列
      */
-    private Queue<T> queue = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>();
 
     /**
      * 队列最大条数
@@ -51,20 +50,16 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
     List<String> subscribeList = new ArrayList<>();
 
     public synchronized void handle() throws InterruptedException {
-        // 队列没有消息，等待一段时间
-        if (queue.size() <= 0) {
-            logger.debug("no message , wait 3s");
-            this.wait(3000L);
-            logger.debug("end wait");
-        }
-        handleMsg();
-    }
-
-    public void handleMsg() {
         T pop;
-        while ((pop = pop()) != null) {
+        while (true) {
+            // 没有消息会阻塞，减少空跑
+            pop = queue.take();
             for (Handle<T> tHandle : handleList) {
                 tHandle.handle(pop);
+            }
+            //线程被中断，跳出循环，线程停止
+            if (Thread.currentThread().isInterrupted()) {
+                break;
             }
         }
     }
@@ -74,7 +69,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      *
      * @param target 消息体
      */
-    public synchronized void add(T target) {
+    public synchronized void addMsg(T target) throws InterruptedException {
 
         if (!verifyMsg(target)) {
             return;
@@ -87,19 +82,8 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
             this.notifyAll();
             return;
         }
-        queue.add(target);
+        queue.put(target);
         this.notifyAll();
-    }
-
-    /**
-     * 获取消息
-     */
-    public T pop() {
-        return queue.poll();
-    }
-
-    public void setQueue(Queue<T> queue) {
-        this.queue = queue;
     }
 
     public void setMaxCount(Integer maxCount) {

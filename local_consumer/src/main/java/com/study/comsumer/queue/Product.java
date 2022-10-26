@@ -18,10 +18,10 @@ public class Product {
     @Autowired
     Map<String, AbstractQueueTemplate> templateMap;
 
-    public void addMsg(Object map) {
+    public void addMsg(Object map) throws InterruptedException {
         for (AbstractQueueTemplate value : templateMap.values()) {
             // 添加消息
-            value.add(map);
+            value.addMsg(map);
         }
     }
 }

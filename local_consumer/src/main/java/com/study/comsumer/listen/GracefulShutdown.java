@@ -22,7 +22,11 @@ public class GracefulShutdown implements ApplicationListener<ContextClosedEvent>
         Collection<AbstractQueueTemplate> values = beansOfType.values();
 
         for (AbstractQueueTemplate value : values) {
-            value.handleMsg();
+            try {
+                value.handle();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
