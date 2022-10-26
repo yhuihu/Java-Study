@@ -79,11 +79,9 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
 
         if (queue.size() > maxCount) {
             logger.error("queue count is full");
-            this.notifyAll();
             return;
         }
         queue.put(target);
-        this.notifyAll();
     }
 
     public void setMaxCount(Integer maxCount) {
