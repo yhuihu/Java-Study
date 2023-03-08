@@ -2,6 +2,7 @@ package com.study.comsumer.queue.template;
 
 import com.study.comsumer.queue.handle.Handle;
 import com.study.comsumer.queue.handle.HandleInfo;
+import com.study.comsumer.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
 
     volatile Thread thread;
 
-    static Object LOCK_OBJ = new Object();
+    static final Object LOCK_OBJ = new Object();
 
     public AbstractQueueTemplate() {
 
@@ -51,17 +52,14 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
 
     public synchronized void handle() throws InterruptedException {
         T pop;
-        while (true) {
+        do {
             // 没有消息会阻塞，减少空跑
             pop = queue.take();
             for (Handle<T> tHandle : handleList) {
                 tHandle.handle(pop);
             }
             //线程被中断，跳出循环，线程停止   个人认为应当保证消息被消费完整
-            if (Thread.currentThread().isInterrupted() && queue.size() == 0) {
-                break;
-            }
-        }
+        } while (!Thread.currentThread().isInterrupted() || queue.size() != 0);
     }
 
     /**
@@ -132,7 +130,7 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
     /**
      * 校验线程是否开始跑了，懒汉
      */
-    private void verifyThread() {
+    protected void verifyThread() {
         if (thread == null) {
             synchronized (LOCK_OBJ) {
                 if (thread == null) {
@@ -154,6 +152,6 @@ public abstract class AbstractQueueTemplate<T> implements Runnable {
      */
     boolean verifyMsg(T msg) {
         Map<String, Object> map = (Map<String, Object>) msg;
-        return subscribeList.contains(map.get("subscribe"));
+        return subscribeList.contains(map.get(Constant.SCRIBE));
     }
 }

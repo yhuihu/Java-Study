@@ -4,6 +4,8 @@ import com.study.comsumer.queue.handle.Handle;
 import com.study.comsumer.util.Constant;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -11,13 +13,12 @@ import java.util.Map;
 /**
  * @author yanghuihu
  * @version 1.0.0
- * @description 本地测试用
- * @date 2022/8/3 23:34
+ * @description TODO
+ * @date 2023/3/8 21:32
  */
-//@Service
-//@Order(Integer.MIN_VALUE)
-public class MyQueueTemplate extends AbstractQueueTemplate<Map<String, String>> implements InitializingBean {
-
+@Service
+@Order(Integer.MIN_VALUE)
+public class MyRedisQueueTemplate extends RedisQueueTemplate<Map<String, String>> implements InitializingBean {
     @Autowired
     List<Handle<Map<String, String>>> list;
 

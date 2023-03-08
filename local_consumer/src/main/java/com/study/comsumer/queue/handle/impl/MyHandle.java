@@ -2,6 +2,7 @@ package com.study.comsumer.queue.handle.impl;
 
 import com.study.comsumer.queue.handle.Handle;
 import com.study.comsumer.queue.handle.HandleInfo;
+import com.study.comsumer.util.Constant;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.Map;
  * @date 2022/8/3 23:15
  */
 @Service
-@HandleInfo(subscribe = {"test"})
+@HandleInfo(subscribe = {Constant.SCRIBE_NAME_TEST})
 public class MyHandle implements Handle<Map<String, String>> {
 
     @Override
