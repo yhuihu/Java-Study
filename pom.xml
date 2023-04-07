@@ -33,6 +33,7 @@
         <module>jpa</module>
         <module>jgroups</module>
         <module>local_consumer</module>
+        <module>flink</module>
     </modules>
     <dependencyManagement>
         <dependencies>
