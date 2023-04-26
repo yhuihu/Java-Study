@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"example.com/golang/colly/util"
 	"fmt"
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/extensions"
@@ -19,16 +20,6 @@ import (
 
 func main() {
 
-	imgPath := "D:\\tmp\\javdb\\"
-
-	pathMap := make(map[string]string)
-
-	dir := IsDir(imgPath)
-
-	if !dir {
-		createDir(imgPath)
-	}
-
 	viper.SetConfigFile("./config/application.yml")
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -40,9 +31,18 @@ func main() {
 		extensions.RandomUserAgent(collector)
 	})
 
-	targetUrl := viper.GetString("go.config.url")
-	keyword := viper.GetString("go.config.keyword")
-	pageSize := viper.GetInt("go.config.pageSize")
+	targetUrl := viper.GetString(constant.SPIDE_URL)
+	keyword := viper.GetString(constant.SPIDE_KEYWORD)
+	pageSize := viper.GetInt(constant.SPIDE_PAGE_SIZE)
+	imgPath := viper.GetString(constant.SPIDE_SAVE_PATH)
+
+	pathMap := make(map[string]string)
+
+	dir := IsDir(imgPath)
+
+	if !dir {
+		createDir(imgPath)
+	}
 
 	c.OnHTML("#videos", func(e *colly.HTMLElement) {
 		e.ForEach("a", func(_ int, elem *colly.HTMLElement) {
@@ -165,7 +165,8 @@ func findEmptyFolder(dirname string) (emptys []string, err error) {
 	return emptys, nil
 }
 
-/**
+/*
+*
 判断文件是否存在
 */
 func IsDir(fileAddr string) bool {
@@ -186,7 +187,8 @@ func IsFile(fileAddr string) bool {
 	return true
 }
 
-/**
+/*
+*
 创建文件夹
 */
 func createDir(dirName string) bool {
