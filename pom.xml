@@ -34,6 +34,7 @@
         <module>jgroups</module>
         <module>local_consumer</module>
         <module>flink</module>
+        <module>go</module>
     </modules>
     <dependencyManagement>
         <dependencies>
