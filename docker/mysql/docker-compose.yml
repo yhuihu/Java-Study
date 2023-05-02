@@ -1,0 +1,13 @@
+version: "3.5"
+services:
+  mysql:
+    image: mysql/mysql-server:latest
+    container_name: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./conf/my.cnf:/etc/mysql/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
