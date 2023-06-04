@@ -1,0 +1,7 @@
+proxy:
+  refreshCron: 0 0/5 * * * *
+  scanProperties:
+    - scanPath: com.study.service
+      proxyImpl: V1,V2.syn
+    - scanPath: com.study.dao
+      proxyImpl: Db2,MySql

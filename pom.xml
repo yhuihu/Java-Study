@@ -36,6 +36,7 @@
         <module>flink</module>
         <module>go</module>
         <module>docker</module>
+        <module>interface_proxy</module>
     </modules>
     <dependencyManagement>
         <dependencies>
