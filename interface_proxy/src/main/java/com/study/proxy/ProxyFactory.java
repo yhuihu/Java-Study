@@ -2,20 +2,30 @@ package com.study.proxy;
 
 import org.springframework.beans.factory.FactoryBean;
 
+import java.lang.reflect.Proxy;
+
 /**
  * @author yanghuihu
  * @version 1.0.0
  * @description TODO
  * @date 2023/6/4 22:49
  */
-public class ProxyFactory implements FactoryBean {
+public class ProxyFactory<T> implements FactoryBean<T> {
+
+    private Class<T> beanClass;
+
+    public ProxyFactory(Class<T> aclass) {
+        this.beanClass = aclass;
+    }
+
     @Override
-    public Object getObject() throws Exception {
-        return null;
+    public T getObject() throws Exception {
+        return (T) Proxy.newProxyInstance(ProxyHandler.class.getClassLoader(),
+                new Class[]{beanClass}, new ProxyHandler());
     }
 
     @Override
     public Class<?> getObjectType() {
-        return null;
+        return beanClass;
     }
 }

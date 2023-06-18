@@ -2,6 +2,7 @@ package com.study.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 /**
  * @author yanghuihu
@@ -11,17 +12,14 @@ import java.lang.reflect.Method;
  */
 public class ProxyHandler implements InvocationHandler {
 
-    private Object proxy;
-
-    public ProxyHandler(final Object o) {
-        this.proxy = o;
-    }
-
     @Override
     public Object invoke(Object object, Method method, Object[] args) throws Throwable {
-        System.out.println("买房准备");
-        Object o = method.invoke(proxy, args);
-        System.out.println("买完了");
-        return null;
+        String className = method.getDeclaringClass().getName();
+        char firstChar = className.charAt(0);
+        // 获取bean名称
+        String beanName = String.valueOf(firstChar).toLowerCase(Locale.getDefault()) + className.substring(1);
+
+
     }
+
 }

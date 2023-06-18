@@ -5,11 +5,16 @@ import lombok.Data;
 /**
  * @author yanghuihu
  * @version 1.0.0
- * @description TODO
+ * @description 扫描配置信息
  * @date 2023/6/4 20:02
  */
 @Data
 public class ScanProperties {
+
+    /**
+     * 一组配置的位移标志
+     */
+    private String primaryKey;
 
     /**
      * 包扫描路径
@@ -21,5 +26,9 @@ public class ScanProperties {
      */
     private String proxyImpl;
 
+    /**
+     * 类名以什么作为结尾
+     */
+    private String endWith;
 
 }
