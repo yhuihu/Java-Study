@@ -1,5 +1,8 @@
 package com.study.proxy;
 
+import com.study.config.ProxyProperties;
+import com.study.util.SpringUtils;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -18,8 +21,9 @@ public class ProxyHandler implements InvocationHandler {
         char firstChar = className.charAt(0);
         // 获取bean名称
         String beanName = String.valueOf(firstChar).toLowerCase(Locale.getDefault()) + className.substring(1);
-
-
+        ProxyProperties proxyProperties = SpringUtils.applicationContext.getBean(ProxyProperties.class);
+//        proxyProperties.getScanPropertiesMap().get(beanName);
+        return null;
     }
 
 }

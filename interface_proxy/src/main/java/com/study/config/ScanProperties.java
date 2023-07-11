@@ -2,6 +2,8 @@ package com.study.config;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author yanghuihu
  * @version 1.0.0
@@ -30,5 +32,7 @@ public class ScanProperties {
      * 类名以什么作为结尾
      */
     private String endWith;
+
+    private List<String> proxyClass;
 
 }

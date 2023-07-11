@@ -20,6 +20,7 @@ public class ProxyFactory<T> implements FactoryBean<T> {
 
     @Override
     public T getObject() throws Exception {
+        // 反射调用proxyHandle的invoke时，可以从method对象获取到beanClass信息
         return (T) Proxy.newProxyInstance(ProxyHandler.class.getClassLoader(),
                 new Class[]{beanClass}, new ProxyHandler());
     }

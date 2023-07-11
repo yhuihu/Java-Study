@@ -11,18 +11,17 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +32,11 @@ import java.util.List;
  * @description TODO
  * @date 2023/6/4 20:21
  */
-@Configuration
-public class ProxyConfig implements BeanDefinitionRegistryPostProcessor, ResourceLoaderAware {
+@Component
+@DependsOn(value = {"springUtils","proxyProperties"})
+public class ProxyPostProcessorConfig implements BeanDefinitionRegistryPostProcessor, ResourceLoaderAware {
 
-    private final static Logger log = LoggerFactory.getLogger(ProxyConfig.class);
+    private final static Logger log = LoggerFactory.getLogger(ProxyPostProcessorConfig.class);
 
     @Autowired
     ProxyProperties proxyProperties;
@@ -48,14 +48,17 @@ public class ProxyConfig implements BeanDefinitionRegistryPostProcessor, Resourc
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
         ScanProperties[] scanProperties = proxyProperties.getScanProperties();
-        for (ScanProperties scanProperty : scanProperties) {
+        for (ScanProperties proxyType : scanProperties) {
             // 按路径扫描所有的接口类
-            List<Class<?>> classes = scanProxyInterface(scanProperty);
+            List<Class<?>> classes = scanProxyInterface(proxyType);
+            List<String> proxyClass = new ArrayList<>();
+            proxyType.setProxyClass(proxyClass);
             if (!CollectionUtils.isEmpty(classes)) {
                 for (Class<?> aClass : classes) {
                     // 判断是否为接口
                     if (aClass.isInterface()) {
                         String name = aClass.getName();
+                        proxyClass.add(name);
                         // 名称驼峰转换后注册到Spring容器中
                         String finalName = name.substring(0, 1).toLowerCase() + name.substring(1);
                         GenericBeanDefinition definition = (GenericBeanDefinition) BeanDefinitionBuilder.genericBeanDefinition(aClass).getRawBeanDefinition();
@@ -117,50 +120,10 @@ public class ProxyConfig implements BeanDefinitionRegistryPostProcessor, Resourc
         return ClassUtils.convertClassNameToResourcePath(scanPath);
     }
 
-    /**
-     * 以文件的形式来获取包下的所有Class
-     *
-     * @param packageName
-     * @param packagePath
-     * @param recursive
-     * @param classes
-     */
-    public static void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive, List<Class<?>> classes) {
-        // 获取此包的目录 建立一个File
-        File dir = new File(packagePath);
-        // 如果不存在或者 也不是目录就直接返回
-        if (!dir.exists() || !dir.isDirectory()) {
-            return;
-        }
-        // 如果存在 就获取包下的所有文件 包括目录
-        File[] dirfiles = dir.listFiles(new FileFilter() {
-            // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
-            @Override
-            public boolean accept(File file) {
-                return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
-            }
-        });
-        // 循环所有文件
-        for (File file : dirfiles) {
-            // 如果是目录 则继续扫描
-            if (file.isDirectory()) {
-                findAndAddClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(), recursive, classes);
-            } else {
-                // 如果是java类文件 去掉后面的.class 只留下类名
-                String className = file.getName().substring(0, file.getName().length() - 6);
-                try {
-                    // 添加到集合中去
-                    classes.add(Class.forName(packageName + '.' + className));
-                } catch (ClassNotFoundException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
-    }
-
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
         metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
     }
+
 }
