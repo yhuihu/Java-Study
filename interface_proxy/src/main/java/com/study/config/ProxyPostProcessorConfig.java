@@ -47,6 +47,7 @@ public class ProxyPostProcessorConfig implements BeanDefinitionRegistryPostProce
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
+        // TODO 由于生命周期缘故，这里还没有执行autowired加载，会报错空指针，需要修改为手动读取配置，待完善
         ScanProperties[] scanProperties = proxyProperties.getScanProperties();
         for (ScanProperties proxyType : scanProperties) {
             // 按路径扫描所有的接口类
