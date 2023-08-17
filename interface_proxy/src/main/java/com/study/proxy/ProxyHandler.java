@@ -2,11 +2,16 @@ package com.study.proxy;
 
 import com.study.config.ScanProperty;
 import com.study.util.SpringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yanghuihu
@@ -16,7 +21,10 @@ import java.util.Locale;
  */
 public class ProxyHandler implements InvocationHandler {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors() * 2
+            , 0L, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
 
     @Override
     public Object invoke(Object object, Method method, Object[] args) throws Throwable {
@@ -41,10 +49,11 @@ public class ProxyHandler implements InvocationHandler {
                 String impl = impls[i];
                 // 携带.syn 证明该方法需要同步执行，否则为异步执行
                 if (impl.contains(".syn")) {
-                    bean = SpringUtils.applicationContext.getBean(beanName + impls[0]);
-                    Object bakResult = invokeBeanMethod(bean, method, args);
+                    bean = SpringUtils.applicationContext.getBean(beanName + impl.split("\\.")[0]);
+                    invokeBeanMethod(bean, method, args);
                 } else {
-
+                    bean = SpringUtils.applicationContext.getBean(beanName + impl);
+                    invokeBeanMethodAsync(bean, method, args);
                 }
             }
         }
@@ -56,8 +65,17 @@ public class ProxyHandler implements InvocationHandler {
         return method.invoke(bean, args);
     }
 
-    private Object invokeBeanMethodAsync(Object bean, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(bean, args);
+    private void invokeBeanMethodAsync(Object bean, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        threadPoolExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    method.invoke(bean, args);
+                } catch (Throwable e) {
+                    logger.error("invoke proxy bean error", e);
+                }
+            }
+        });
     }
 
 }

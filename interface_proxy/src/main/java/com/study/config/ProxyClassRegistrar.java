@@ -13,14 +13,12 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.util.LinkedHashSet;
@@ -32,8 +30,6 @@ import java.util.Map;
  * @description TODO
  * @date 2023/6/4 20:21
  */
-@Component
-@Order(Integer.MIN_VALUE)
 public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     private final static Logger log = LoggerFactory.getLogger(ProxyClassRegistrar.class);

@@ -8,7 +8,7 @@ import com.study.config.ProxyConfig;
  * @description TODO
  * @date 2023/6/4 19:45
  */
-@ProxyConfig(impl = "MySql,Db2")
+@ProxyConfig(impl = "MySql,Db2,Oracle.syn")
 public interface DemoDao {
     void sayHello();
 }
