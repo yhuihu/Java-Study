@@ -1,9 +1,9 @@
 package com.study;
 
-import com.study.config.ProxyProperties;
+import com.study.config.EnableProxyConfig;
+import com.study.dao.DemoDao;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -13,10 +13,11 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @date 2023/6/4 19:51
  */
 @SpringBootApplication
-@EnableConfigurationProperties(ProxyProperties.class)
+@EnableProxyConfig(basePackages = "com.study.dao")
 public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(Application.class, args);
-
+        DemoDao bean = run.getBean(DemoDao.class);
+        bean.sayHello();
     }
 }
