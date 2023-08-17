@@ -12,7 +12,6 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -34,7 +33,6 @@ import java.util.Map;
  * @date 2023/6/4 20:21
  */
 @Component
-@DependsOn(value = {"springUtils"})
 @Order(Integer.MIN_VALUE)
 public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
