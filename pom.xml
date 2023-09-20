@@ -37,6 +37,7 @@
         <module>go</module>
         <module>docker</module>
         <module>interface_proxy</module>
+        <module>feign</module>
     </modules>
     <dependencyManagement>
         <dependencies>
