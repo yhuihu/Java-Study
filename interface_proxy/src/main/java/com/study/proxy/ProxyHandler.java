@@ -1,5 +1,7 @@
 package com.study.proxy;
 
+import com.study.config.DefaultProxyThreadPoolConfig;
+import com.study.config.ProxyThreadPoolConfig;
 import com.study.config.ScanProperty;
 import com.study.util.SpringUtils;
 import org.slf4j.Logger;
@@ -9,6 +11,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -23,8 +27,7 @@ public class ProxyHandler implements InvocationHandler {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().availableProcessors() * 2
-            , 0L, TimeUnit.MINUTES, new LinkedBlockingQueue<>());
+    private ThreadPoolExecutor threadPoolExecutor;
 
     @Override
     public Object invoke(Object object, Method method, Object[] args) throws Throwable {
@@ -66,14 +69,25 @@ public class ProxyHandler implements InvocationHandler {
     }
 
     private void invokeBeanMethodAsync(Object bean, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-        threadPoolExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    method.invoke(bean, args);
-                } catch (Throwable e) {
-                    logger.error("invoke proxy bean error", e);
+        if (threadPoolExecutor == null) {
+            Map<String, ProxyThreadPoolConfig> beansOfType = SpringUtils.applicationContext.getBeansOfType(ProxyThreadPoolConfig.class);
+            if (beansOfType.size() > 1) {
+                Set<Map.Entry<String, ProxyThreadPoolConfig>> entries = beansOfType.entrySet();
+                for (Map.Entry<String, ProxyThreadPoolConfig> entry : entries) {
+                    if (!(entry.getValue() instanceof DefaultProxyThreadPoolConfig)) {
+                        threadPoolExecutor = entry.getValue().getThreadPoolExecutor();
+                    }
                 }
+            }else{
+                threadPoolExecutor = beansOfType.values().iterator().next().getThreadPoolExecutor();
+            }
+        }
+
+        threadPoolExecutor.submit(() -> {
+            try {
+                method.invoke(bean, args);
+            } catch (Throwable e) {
+                logger.error("invoke proxy bean error", e);
             }
         });
     }

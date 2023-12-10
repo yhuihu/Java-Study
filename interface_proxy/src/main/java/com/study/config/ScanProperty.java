@@ -1,5 +1,7 @@
 package com.study.config;
 
+import java.beans.Transient;
+
 /**
  * @author yanghuihu
  * @version 1.0.0
@@ -36,10 +38,12 @@ public class ScanProperty {
         this.classImpl = classImpl;
     }
 
+    @Transient
     public Class<?> getClassInfo() {
         return classInfo;
     }
 
+    @Transient
     public void setClassInfo(Class<?> classInfo) {
         this.classInfo = classInfo;
     }
