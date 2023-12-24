@@ -13,11 +13,13 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -38,8 +40,8 @@ import java.util.Set;
  * @description TODO
  * @date 2023/6/4 20:21
  */
-@Component
-@DependsOn("springUtils")
+@Configuration(proxyBeanMethods = false)
+@AutoConfigureAfter(ProxyThreadPoolConfig.class)
 public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware, InitializingBean {
 
     private final static Logger log = LoggerFactory.getLogger(ProxyClassRegistrar.class);
@@ -172,4 +174,5 @@ public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, Resou
         // 持久化扫描接口
         persistentInterFace();
     }
+
 }

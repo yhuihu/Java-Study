@@ -1,4 +1,4 @@
-package com.study.dao;
+package com.study.demo.dao;
 
 import com.study.config.ProxyConfig;
 
