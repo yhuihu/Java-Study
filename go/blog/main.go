@@ -2,9 +2,9 @@ package main
 
 import (
 	handle "blog/common"
+	"blog/handle"
 	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 )
 
 func init() {
@@ -12,20 +12,16 @@ func init() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
 }
 
-func pingFunc(context *gin.Context) error {
-	context.JSONP(http.StatusOK, gin.H{
-		"message": "ok",
-	})
-	log.Println("服务端进程心跳检测")
-	return nil
-}
-
 func main() {
 	ginServer := gin.Default()
 	// 心跳
-	ginServer.GET("ping", handle.Wrapper(pingFunc))
+	ginServer.GET("ping", handle.Wrapper(pingHandle.PingFunc))
 	// 图标
 	ginServer.GET("favicon.ico", func(context *gin.Context) {})
+
+	ginServer.POST("doPost", handle.Wrapper(func(c *gin.Context) error {
+		return nil
+	}))
 	// 绑定端口
 	err := ginServer.Run(":9999")
 	// 启动异常处理
