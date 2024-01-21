@@ -1,6 +1,8 @@
 package com.study.demo.controller;
 
 import com.study.demo.entity.School;
+import com.study.demo.util.ScanOperationUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class StringController {
     @Resource
     private RedisTemplate<String, School> redisTemplate;
+
+    @Autowired
+    ScanOperationUtil operationUtil;
 
     @PostMapping
     public School saveSchool(@RequestBody School school) {
@@ -50,5 +55,10 @@ public class StringController {
         if (aBoolean){
             redisTemplate.delete(key);
         }
+    }
+
+    @GetMapping("/scan/{id}")
+    public void scanSchool(@PathVariable Long id){
+        operationUtil.scan("id");
     }
 }
