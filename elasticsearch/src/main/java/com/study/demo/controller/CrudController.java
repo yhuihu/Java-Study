@@ -49,6 +49,7 @@ public class CrudController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteData(@PathVariable(name = "id") String id) {
         userRepository.deleteById(Long.valueOf(id));
