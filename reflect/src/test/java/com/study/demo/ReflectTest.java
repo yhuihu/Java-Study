@@ -3,6 +3,7 @@ package com.study.demo;
 import com.study.demo.entity.School;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -66,5 +67,15 @@ public class ReflectTest {
     @Test
     public void reflectMethod() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Reflect.getMethod();
+    }
+
+    @Test
+    public void changeInstanceFieldValue() throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+        School newInstance = Reflect.createNewInstance();
+        Class classSchool = School.class;
+        Field schoolNameField = classSchool.getDeclaredField("schoolName");
+        schoolNameField.setAccessible(true);
+        schoolNameField.set(newInstance,"Tiger");
+        System.out.println(newInstance);
     }
 }
