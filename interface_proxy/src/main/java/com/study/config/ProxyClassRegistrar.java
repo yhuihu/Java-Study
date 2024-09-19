@@ -4,29 +4,28 @@ import com.study.proxy.DefaultProxyPersistent;
 import com.study.proxy.ProxyFactory;
 import com.study.proxy.ProxyFactoryHandle;
 import com.study.proxy.ProxyPersistent;
-import com.study.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.util.HashMap;
@@ -42,7 +41,7 @@ import java.util.Set;
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(ProxyThreadPoolConfig.class)
-public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware, InitializingBean {
+public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor, ResourceLoaderAware, EnvironmentAware, ApplicationContextAware {
 
     private final static Logger log = LoggerFactory.getLogger(ProxyClassRegistrar.class);
     private ResourcePatternResolver resourcePatternResolver;
@@ -50,6 +49,8 @@ public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, Resou
     private ResourceLoader resourceLoader;
 
     private Environment environment;
+
+    private ApplicationContext applicationContext;
 
 
     /**
@@ -68,19 +69,9 @@ public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, Resou
         resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
     }
 
-    @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        try {
-            // 扫描接口
-            registerProxyConfiguration(importingClassMetadata, registry);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private void persistentInterFace() {
         ProxyPersistent proxyPersistent = null;
-        Map<String, ProxyPersistent> beansOfType = SpringUtils.applicationContext.getBeansOfType(ProxyPersistent.class);
+        Map<String, ProxyPersistent> beansOfType = applicationContext.getBeansOfType(ProxyPersistent.class);
         if (beansOfType.size() > 1) {
             Set<Map.Entry<String, ProxyPersistent>> entries = beansOfType.entrySet();
             for (Map.Entry<String, ProxyPersistent> entry : entries) {
@@ -111,41 +102,7 @@ public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, Resou
     private void registerProxyConfiguration(AnnotationMetadata metadata, BeanDefinitionRegistry registry) throws ClassNotFoundException {
         Map<String, Object> defaultAttrs = metadata.getAnnotationAttributes(EnableProxyConfig.class.getName(), true);
         if (defaultAttrs.containsKey("basePackages")) {
-            String[] basePackages = (String[]) defaultAttrs.get("basePackages");
-            ClassPathScanningCandidateComponentProvider scanner = getScanner();
-            scanner.setResourceLoader(this.resourceLoader);
-            scanner.addIncludeFilter(new AnnotationTypeFilter(ProxyConfig.class));
-            LinkedHashSet<BeanDefinition> candidateComponents = new LinkedHashSet<>();
-            for (String basePackage : basePackages) {
-                candidateComponents.addAll(scanner.findCandidateComponents(basePackage));
-            }
-
-            for (BeanDefinition candidateComponent : candidateComponents) {
-                if (candidateComponent instanceof AnnotatedBeanDefinition) {
-                    AnnotationMetadata annotationMetadata = ((AnnotatedBeanDefinition) candidateComponent).getMetadata();
-                    Map<String, Object> annotationAttributes = annotationMetadata.getAnnotationAttributes(ProxyConfig.class.getCanonicalName());
-                    Object implMethods = annotationAttributes.get("impl");
-                    Class<?> clazz = Class.forName(candidateComponent.getBeanClassName(), true, this.resourcePatternResolver.getClassLoader());
-                    if (clazz.isInterface()) {
-                        String name = clazz.getSimpleName();
-                        log.info("proxy class : {}", name);
-                        ScanProperty scanProperty = new ScanProperty();
-                        scanProperty.setClassInfo(clazz);
-                        String className = name.substring(0, 1).toLowerCase() + name.substring(1);
-                        scanProperty.setClassName(className);
-                        scanProperty.setClassImpl((String) implMethods);
-                        ProxyFactory.scanPropertiesMap.put(className, scanProperty);
-
-                        // 名称驼峰转换后注册到Spring容器中
-                        GenericBeanDefinition definition = (GenericBeanDefinition) BeanDefinitionBuilder.genericBeanDefinition(clazz).getRawBeanDefinition();
-                        definition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
-                        definition.setBeanClass(ProxyFactoryHandle.class);
-                        definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_NAME);
-                        definition.setPrimary(true);
-                        registry.registerBeanDefinition(className, definition);
-                    }
-                }
-            }
+            registerProxyBean(registry, (String[]) defaultAttrs.get("basePackages"));
         }
     }
 
@@ -170,9 +127,64 @@ public class ProxyClassRegistrar implements ImportBeanDefinitionRegistrar, Resou
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        // 持久化扫描接口
-        persistentInterFace();
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+
     }
 
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        Map<String, Object> beansWithAnnotation = beanFactory.getBeansWithAnnotation(EnableProxyConfig.class);
+        Set<String> beanNames = beansWithAnnotation.keySet();
+        beanNames.forEach(beanName -> {
+            EnableProxyConfig annotationOnBean = beanFactory.findAnnotationOnBean(beanName, EnableProxyConfig.class);
+            String[] basedPackages = annotationOnBean.basePackages();
+            try {
+                registerProxyBean((BeanDefinitionRegistry) beanFactory, basedPackages);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void registerProxyBean(BeanDefinitionRegistry registry, String[] basePackages) throws ClassNotFoundException {
+        ClassPathScanningCandidateComponentProvider scanner = getScanner();
+        scanner.setResourceLoader(this.resourceLoader);
+//        scanner.addIncludeFilter(new AnnotationTypeFilter(ProxyConfig.class));
+        LinkedHashSet<BeanDefinition> candidateComponents = new LinkedHashSet<>();
+        for (String basePackage : basePackages) {
+            candidateComponents.addAll(scanner.findCandidateComponents(basePackage));
+        }
+
+        for (BeanDefinition candidateComponent : candidateComponents) {
+            if (candidateComponent instanceof AnnotatedBeanDefinition) {
+                AnnotationMetadata annotationMetadata = ((AnnotatedBeanDefinition) candidateComponent).getMetadata();
+                Map<String, Object> annotationAttributes = annotationMetadata.getAnnotationAttributes(ProxyConfig.class.getCanonicalName());
+                Object implMethods = annotationAttributes.get("impl");
+                Class<?> clazz = Class.forName(candidateComponent.getBeanClassName(), true, this.resourcePatternResolver.getClassLoader());
+                if (clazz.isInterface()) {
+                    String name = clazz.getSimpleName();
+                    log.info("proxy class : {}", name);
+                    ScanProperty scanProperty = new ScanProperty();
+                    scanProperty.setClassInfo(clazz);
+                    String className = name.substring(0, 1).toLowerCase() + name.substring(1);
+                    scanProperty.setClassName(className);
+                    scanProperty.setClassImpl((String) implMethods);
+                    ProxyFactory.scanPropertiesMap.put(className, scanProperty);
+
+                    // 名称驼峰转换后注册到Spring容器中
+                    GenericBeanDefinition definition = (GenericBeanDefinition) BeanDefinitionBuilder.genericBeanDefinition(clazz).getRawBeanDefinition();
+                    definition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
+                    definition.setBeanClass(ProxyFactoryHandle.class);
+                    definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_NAME);
+                    definition.setPrimary(true);
+                    registry.registerBeanDefinition(className, definition);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }
