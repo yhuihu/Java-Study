@@ -1,5 +1,7 @@
 package com.study.config;
 
+import com.study.util.Constant;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,8 +14,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface ProxyConfig {
+public @interface ProxyComponent {
 
-    String impl() default "";
+    String impl() default Constant.undefinedString;
 
 }

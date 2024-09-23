@@ -26,8 +26,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.ClassUtils;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -90,11 +92,11 @@ public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor,
         Map<String, ScanProperty> finalRead = read;
         ProxyFactory.scanPropertiesMap.forEach((key, value) -> {
             if (finalRead.containsKey(key)) {
-                value.setClassImpl(finalRead.get(key).getClassImpl());
+                value.setDefaultImpl(finalRead.get(key).getDefaultImpl());
             } else {
                 finalRead.put(key, value);
             }
-            log.info("proxy class {} , impl {}", value.getClassInfo().getName(), value.getClassImpl());
+            log.info("proxy class {} , impl {}", value.getClassInfo().getName(), value.getDefaultImpl());
         });
         proxyPersistent.write(read);
     }
@@ -149,7 +151,7 @@ public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor,
     private void registerProxyBean(BeanDefinitionRegistry registry, String[] basePackages) throws ClassNotFoundException {
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.setResourceLoader(this.resourceLoader);
-//        scanner.addIncludeFilter(new AnnotationTypeFilter(ProxyConfig.class));
+        scanner.addIncludeFilter(new AnnotationTypeFilter(ProxyComponent.class));
         LinkedHashSet<BeanDefinition> candidateComponents = new LinkedHashSet<>();
         for (String basePackage : basePackages) {
             candidateComponents.addAll(scanner.findCandidateComponents(basePackage));
@@ -158,8 +160,11 @@ public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor,
         for (BeanDefinition candidateComponent : candidateComponents) {
             if (candidateComponent instanceof AnnotatedBeanDefinition) {
                 AnnotationMetadata annotationMetadata = ((AnnotatedBeanDefinition) candidateComponent).getMetadata();
-                Map<String, Object> annotationAttributes = annotationMetadata.getAnnotationAttributes(ProxyConfig.class.getCanonicalName());
-                Object implMethods = annotationAttributes.get("impl");
+                Map<String, Object> annotationAttributes = annotationMetadata.getAnnotationAttributes(ProxyComponent.class.getCanonicalName());
+                String defaultImpl = "";
+                if (annotationAttributes != null) {
+                    defaultImpl = (String) annotationAttributes.get("impl");
+                }
                 Class<?> clazz = Class.forName(candidateComponent.getBeanClassName(), true, this.resourcePatternResolver.getClassLoader());
                 if (clazz.isInterface()) {
                     String name = clazz.getSimpleName();
@@ -168,9 +173,17 @@ public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor,
                     scanProperty.setClassInfo(clazz);
                     String className = name.substring(0, 1).toLowerCase() + name.substring(1);
                     scanProperty.setClassName(className);
-                    scanProperty.setClassImpl((String) implMethods);
+                    scanProperty.setDefaultImpl(defaultImpl);
                     ProxyFactory.scanPropertiesMap.put(className, scanProperty);
-
+                    Method[] declaredMethods = clazz.getDeclaredMethods();
+                    Map<String,String> methodMap = new HashMap<>();
+                    for (Method declaredMethod : declaredMethods) {
+                        ProxyMethod annotation = declaredMethod.getAnnotation(ProxyMethod.class);
+                        if (annotation != null) {
+                            methodMap.put(declaredMethod.getName(), annotation.impl());
+                        }
+                    }
+                    scanProperty.setMethodsImpl(methodMap);
                     // 名称驼峰转换后注册到Spring容器中
                     GenericBeanDefinition definition = (GenericBeanDefinition) BeanDefinitionBuilder.genericBeanDefinition(clazz).getRawBeanDefinition();
                     definition.getConstructorArgumentValues().addGenericArgumentValue(clazz);

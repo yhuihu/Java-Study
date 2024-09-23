@@ -1,6 +1,10 @@
 package com.study.config;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.beans.Transient;
+import java.util.Map;
 
 /**
  * @author yanghuihu
@@ -13,29 +17,27 @@ public class ScanProperty {
     /**
      * 类名
      */
+    @Setter
     private String className;
 
     /**
      * 实现类后缀
      */
-    private String classImpl;
+    @Setter
+    @Getter
+    private String defaultImpl;
 
     private Class<?> classInfo;
 
+    /**
+     * 方法级别控制
+     */
+    @Setter
+    @Getter
+    private Map<String, String> methodsImpl;
+
     public String getClassName() {
         return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public String getClassImpl() {
-        return classImpl;
-    }
-
-    public void setClassImpl(String classImpl) {
-        this.classImpl = classImpl;
     }
 
     @Transient
@@ -47,4 +49,5 @@ public class ScanProperty {
     public void setClassInfo(Class<?> classInfo) {
         this.classInfo = classInfo;
     }
+
 }

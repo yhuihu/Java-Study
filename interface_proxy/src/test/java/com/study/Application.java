@@ -2,7 +2,6 @@ package com.study;
 
 import com.study.config.EnableProxyConfig;
 import com.study.demo.dao.DemoDao;
-import com.study.util.SpringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
@@ -24,16 +23,12 @@ public class Application {
     @Autowired
     DemoDao demoDao;
 
-    @Autowired
-    SpringUtils springUtils;
-
-
     @Test
     public void daoTest() {
         demoDao.sayHello();
     }
 
-    @EnableProxyConfig(basePackages = "com.study.demo")
+    @EnableProxyConfig(basePackages = {"com.study.demo"})
     @SpringBootConfiguration
     @EnableAutoConfiguration
     @ComponentScan(basePackages = "com.study.demo")
