@@ -27,7 +27,6 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -53,17 +52,6 @@ public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor,
     private Environment environment;
 
     private ApplicationContext applicationContext;
-
-
-    /**
-     * 包名替换，从.替换为文件符
-     *
-     * @param scanPath
-     * @return
-     */
-    private String resolveBasePackage(String scanPath) {
-        return ClassUtils.convertClassNameToResourcePath(scanPath);
-    }
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
@@ -99,13 +87,6 @@ public class ProxyClassRegistrar implements BeanDefinitionRegistryPostProcessor,
             log.info("proxy class {} , impl {}", value.getClassInfo().getName(), value.getDefaultImpl());
         });
         proxyPersistent.write(read);
-    }
-
-    private void registerProxyConfiguration(AnnotationMetadata metadata, BeanDefinitionRegistry registry) throws ClassNotFoundException {
-        Map<String, Object> defaultAttrs = metadata.getAnnotationAttributes(EnableProxyConfig.class.getName(), true);
-        if (defaultAttrs.containsKey("basePackages")) {
-            registerProxyBean(registry, (String[]) defaultAttrs.get("basePackages"));
-        }
     }
 
     protected ClassPathScanningCandidateComponentProvider getScanner() {
